@@ -50,7 +50,11 @@ export async function onRequestGet(context) {
   try {
     tokenPayload = await exchangeCodeForAccessToken(context.request, context.env, code);
   } catch (error) {
-    return redirectResponse(appendAuthError(returnTo, 'login_token_exchange_failed'), [
+    return redirectResponse(appendAuthError(
+      returnTo,
+      'login_token_exchange_failed',
+      error?.message || 'failed_to_exchange_token',
+    ), [
       ...cleanupHeaders,
       ['Set-Cookie', clearUserSessionCookie(context.request)],
     ]);
@@ -60,7 +64,11 @@ export async function onRequestGet(context) {
   try {
     userInfo = await fetchCurrentFeishuUser(tokenPayload.access_token);
   } catch (error) {
-    return redirectResponse(appendAuthError(returnTo, 'login_user_info_failed'), [
+    return redirectResponse(appendAuthError(
+      returnTo,
+      'login_user_info_failed',
+      error?.message || 'failed_to_fetch_user',
+    ), [
       ...cleanupHeaders,
       ['Set-Cookie', clearUserSessionCookie(context.request)],
     ]);

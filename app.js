@@ -735,7 +735,7 @@ function renderAccessBanner(authState = {}) {
   `;
 }
 
-function mapAuthError(code) {
+function mapAuthError(code, detail = '') {
   const messages = {
     access_denied: '你取消了飞书授权，本次未登录。',
     invalid_state: '登录状态校验失败，请重新发起飞书登录。',
@@ -745,17 +745,21 @@ function mapAuthError(code) {
     tenant_not_allowed: '当前飞书企业不在允许名单内。',
   };
 
-  return messages[code] || '飞书登录未完成，请稍后再试。';
+  const base = messages[code] || '飞书登录未完成，请稍后再试。';
+  const safeDetail = String(detail || '').trim();
+  return safeDetail ? `${base} 原始错误：${safeDetail}` : base;
 }
 
 function consumeAuthError() {
   const url = new URL(location.href);
   const authError = url.searchParams.get('auth_error');
+  const authErrorDetail = url.searchParams.get('auth_error_detail');
 
   if (!authError) return;
 
-  pendingAuthMessage = mapAuthError(authError);
+  pendingAuthMessage = mapAuthError(authError, authErrorDetail);
   url.searchParams.delete('auth_error');
+  url.searchParams.delete('auth_error_detail');
   history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
 }
 

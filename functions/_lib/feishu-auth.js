@@ -185,10 +185,20 @@ export function redirectResponse(location, extraHeaders = [], status = 302) {
   return new Response(null, { status, headers });
 }
 
-export function appendAuthError(returnTo, authError) {
+function normalizeAuthErrorDetail(detail) {
+  const text = String(detail || '').trim();
+  if (!text) return '';
+  return text.replace(/\s+/g, ' ').slice(0, 160);
+}
+
+export function appendAuthError(returnTo, authError, detail = '') {
   const safeReturnTo = normalizeReturnTo(returnTo);
   const url = new URL(safeReturnTo, 'https://placeholder.local');
   url.searchParams.set('auth_error', authError);
+  const safeDetail = normalizeAuthErrorDetail(detail);
+  if (safeDetail) {
+    url.searchParams.set('auth_error_detail', safeDetail);
+  }
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
