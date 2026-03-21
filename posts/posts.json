@@ -1,5 +1,17 @@
 [
   {
+    "title": "Irene Notes 第一篇文章",
+    "slug": "irene-notes-first-post-2026-03-21",
+    "date": "2026-03-21",
+    "tags": [
+      "Irene",
+      "站点发布",
+      "项目与交付"
+    ],
+    "owner": "irene",
+    "summary": "Irene Notes 的首篇文章，用于验证 Git 提交后自动发布链路。"
+  },
+  {
     "title": "测试文章",
     "slug": "test-post",
     "date": "2026-03-21",
