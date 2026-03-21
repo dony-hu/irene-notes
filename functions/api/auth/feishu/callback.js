@@ -46,32 +46,42 @@ export async function onRequestGet(context) {
     ]);
   }
 
+  let tokenPayload;
   try {
-    const tokenPayload = await exchangeCodeForAccessToken(context.request, context.env, code);
-    const userInfo = await fetchCurrentFeishuUser(tokenPayload.access_token);
-
-    if (!isTenantAllowed(context.request, context.env, userInfo.tenant_key || '')) {
-      return redirectResponse(appendAuthError(returnTo, 'tenant_not_allowed'), [
-        ...cleanupHeaders,
-        ['Set-Cookie', clearUserSessionCookie(context.request)],
-      ]);
-    }
-
-    const session = await createUserSession(
-      context.request,
-      context.env,
-      userInfo,
-      tokenPayload.expires_in,
-    );
-
-    return redirectResponse(returnTo, [
-      ...cleanupHeaders,
-      ['Set-Cookie', session.cookie],
-    ]);
+    tokenPayload = await exchangeCodeForAccessToken(context.request, context.env, code);
   } catch (error) {
-    return redirectResponse(appendAuthError(returnTo, 'login_failed'), [
+    return redirectResponse(appendAuthError(returnTo, 'login_token_exchange_failed'), [
       ...cleanupHeaders,
       ['Set-Cookie', clearUserSessionCookie(context.request)],
     ]);
   }
+
+  let userInfo;
+  try {
+    userInfo = await fetchCurrentFeishuUser(tokenPayload.access_token);
+  } catch (error) {
+    return redirectResponse(appendAuthError(returnTo, 'login_user_info_failed'), [
+      ...cleanupHeaders,
+      ['Set-Cookie', clearUserSessionCookie(context.request)],
+    ]);
+  }
+
+  if (!isTenantAllowed(context.request, context.env, userInfo.tenant_key || '')) {
+    return redirectResponse(appendAuthError(returnTo, 'tenant_not_allowed'), [
+      ...cleanupHeaders,
+      ['Set-Cookie', clearUserSessionCookie(context.request)],
+    ]);
+  }
+
+  const session = await createUserSession(
+    context.request,
+    context.env,
+    userInfo,
+    tokenPayload.expires_in,
+  );
+
+  return redirectResponse(returnTo, [
+    ...cleanupHeaders,
+    ['Set-Cookie', session.cookie],
+  ]);
 }

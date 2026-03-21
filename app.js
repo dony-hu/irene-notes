@@ -740,6 +740,8 @@ function mapAuthError(code) {
     access_denied: '你取消了飞书授权，本次未登录。',
     invalid_state: '登录状态校验失败，请重新发起飞书登录。',
     login_failed: '飞书登录失败，请检查应用配置后重试。',
+    login_token_exchange_failed: '飞书登录失败：授权码换取访问令牌失败。请重点检查当前 App ID 对应的 App Secret 是否正确。',
+    login_user_info_failed: '飞书登录失败：已拿到访问令牌，但读取飞书用户信息失败。请检查应用权限或重新确认应用配置。',
     tenant_not_allowed: '当前飞书企业不在允许名单内。',
   };
 
