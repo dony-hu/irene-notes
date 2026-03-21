@@ -157,8 +157,8 @@ function main() {
   fs.mkdirSync(path.dirname(outHtml), { recursive: true });
   fs.mkdirSync(path.dirname(outMd), { recursive: true });
 
-  const html = renderWechatHtml(blocks, title, 'Jerry Notes');
-  const wechatMd = renderWechatMd(blocks, title, 'Jerry Notes');
+  const html = renderWechatHtml(blocks, title, 'Irene Notes');
+  const wechatMd = renderWechatMd(blocks, title, 'Irene Notes');
   fs.writeFileSync(outHtml, html, 'utf8');
   fs.writeFileSync(outMd, wechatMd, 'utf8');
 

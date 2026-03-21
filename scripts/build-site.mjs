@@ -117,9 +117,9 @@ const irenePosts = posts.filter((post) => post.owner === 'irene');
 buildOwnerSite('jerry', jerryPosts);
 buildOwnerSite('irene', irenePosts);
 
-// Backward compatibility: keep root dist as Jerry site for existing single-project deploy jobs.
-for (const entry of fs.readdirSync(path.join(distDir, 'jerry'), { withFileTypes: true })) {
-  const src = path.join(distDir, 'jerry', entry.name);
+// Keep root dist aligned with the dedicated Irene site for local preview and direct deploy.
+for (const entry of fs.readdirSync(path.join(distDir, 'irene'), { withFileTypes: true })) {
+  const src = path.join(distDir, 'irene', entry.name);
   const dest = path.join(distDir, entry.name);
   if (entry.isDirectory()) {
     fs.cpSync(src, dest, { recursive: true });
@@ -128,4 +128,4 @@ for (const entry of fs.readdirSync(path.join(distDir, 'jerry'), { withFileTypes:
   }
 }
 
-console.log(`Built Jerry posts: ${jerryPosts.length}, Irene posts: ${irenePosts.length} => ${path.relative(rootDir, distDir)}`);
+console.log(`Built Irene posts: ${irenePosts.length}, Jerry posts: ${jerryPosts.length} => ${path.relative(rootDir, distDir)}`);

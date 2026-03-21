@@ -103,13 +103,13 @@ function buildHtml({ slides, deckTitle = 'Slides', outputCss = './slides.css' })
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${escapeHtml(deckTitle)} | Jerry Notes</title>
+  <title>${escapeHtml(deckTitle)} | Irene Notes</title>
   <link rel="stylesheet" href="${outputCss}" />
 </head>
 <body class="ai-transformation-root">
   <div class="ai-deck-shell" id="deckShell">
     <div class="ai-deck-topbar" id="deckTopbar">
-      <a href="./index.html" class="back" id="deckBackLink">← 返回 Jerry Notes</a>
+      <a href="./index.html" class="back" id="deckBackLink">← 返回 Irene Notes</a>
       <div class="ai-deck-logo">${escapeHtml(deckTitle)}</div>
       <div class="ai-deck-shortcuts">←/→ 翻页 · Space 下一页 · N 备注 · O 总览 · F 全屏</div>
       <button id="fullscreenBtn" class="slides-fullscreen-btn" type="button">⤢ 全屏</button>

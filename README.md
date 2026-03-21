@@ -1,4 +1,4 @@
-# Jerry Notes
+# Irene Notes
 
 一个基于 Markdown 的轻量静态个人站。
 
@@ -82,13 +82,13 @@ tags:
 
 ## Cloudflare Pages 部署
 
-当前 `jerry-notes.pages.dev` 项目已经确认是 `Direct Upload` 类型，不是 Git 集成。
+当前 `irene-notes.pages.dev` 项目使用的是 `Direct Upload` 类型，不是 Git 集成。
 
 因此这里采用的自动发布方案是：
 
 - GitHub 负责托管源码
 - GitHub Actions 在 `push main` 后执行 `npm run build`
-- Wrangler 把 `dist/` 直接上传到现有的 Cloudflare Pages 项目 `jerry-notes`
+- Wrangler 把 `dist/` 直接上传到 Cloudflare Pages 项目 `irene-notes`
 
 对应工作流文件：
 

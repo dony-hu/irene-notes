@@ -789,7 +789,7 @@ if (summaryBtn) {
   });
 }
 
-const THEME_KEY = 'jerry-notes-theme';
+const THEME_KEY = 'irene-notes-theme';
 const THEME_LIGHT = 'light';
 const THEME_DARK = 'dark';
 
