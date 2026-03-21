@@ -1,23 +1,15 @@
 [
   {
-    "title": "2026年3月21日上海天气报告（测试文章）",
-    "slug": "weather-test-20260321",
+    "title": "Irene Notes 第一篇文章",
+    "slug": "irene-notes-first-post-2026-03-21",
     "date": "2026-03-21",
     "tags": [
-      "测试",
-      "天气"
+      "Irene",
+      "站点发布",
+      "项目与交付"
     ],
-    "summary": "本文为自动发布的测试文章，验证以下发布流程能力："
-  },
-  {
-    "title": "今天的天气真好",
-    "slug": "weather-nice-20260321",
-    "date": "2026-03-21",
-    "tags": [
-      "日常",
-      "天气"
-    ],
-    "summary": "今日上海天气晴好，气温适宜，阳光明媚，非常适合户外活动。"
+    "owner": "irene",
+    "summary": "Irene Notes 的首篇文章，用于验证 Git 提交后自动发布链路。"
   },
   {
     "title": "测试文章",
