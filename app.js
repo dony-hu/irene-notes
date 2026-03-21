@@ -201,10 +201,17 @@ const wechatBtn = document.getElementById('wechat-btn');
 const summaryBtn = document.getElementById('summary-btn');
 const themeToggleBtn = document.getElementById('theme-toggle');
 const postsSection = document.getElementById('posts');
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const userSessionEl = document.getElementById('user-session');
+const userAvatarEl = document.getElementById('user-avatar');
+const userNameEl = document.getElementById('user-name');
+const authNoteEl = document.getElementById('auth-note');
 
 let currentPost = null;
 let isMobileFilterOpen = false;
 let showAllMobileTags = false;
+let pendingAuthMessage = '';
 
 function isMobileViewport() {
   return window.matchMedia('(max-width: 900px)').matches;
@@ -282,11 +289,18 @@ function renderList() {
   postListEl.innerHTML = current
     .map((p) => {
       const summary = p.summary ? `<div class="post-summary">${escapeHtml(p.summary)}</div>` : '';
+      const visibility = p.visibility === 'internal' ? '内部' : '外部';
+      const visibilityClass = p.visibility === 'internal' ? 'is-internal' : 'is-public';
+      const tags = (p.tags || []).length ? `<span>${(p.tags || []).join(' / ')}</span>` : '';
       return `
     <li>
       <a class="post-link" href="#${p.slug}" data-slug="${p.slug}">${p.title}</a>
       ${summary}
-      <div class="post-meta">${p.date || ''}</div>
+      <div class="post-meta">
+        <span>${p.date || ''}</span>
+        <span class="post-visibility ${visibilityClass}">${visibility}</span>
+        ${tags}
+      </div>
     </li>
   `;
     })
@@ -565,6 +579,19 @@ function renderEmbeddedSlideDeck(slug, target) {
   `;
 }
 
+function renderProtectedPostMessage() {
+  contentEl.innerHTML = `
+    <div class="protected-post">
+      <h2>这篇内容属于内部资料</h2>
+      <p>当前登录态已失效，或你还没有完成飞书登录。</p>
+      <p>登录成功后再返回当前页面，就可以继续查看。</p>
+      <div class="protected-post-actions">
+        <a class="btn" href="${buildAuthUrl('login')}">使用飞书登录</a>
+      </div>
+    </div>
+  `;
+}
+
 function estimateCellWeight(text = '') {
   let weight = 0;
   for (const ch of String(text)) {
@@ -626,6 +653,102 @@ function closePost() {
   currentPost = null;
 }
 
+function getCurrentReturnTo() {
+  return `${location.pathname}${location.search}${location.hash}`;
+}
+
+function buildAuthUrl(action) {
+  return `/api/auth/feishu/${action}?return_to=${encodeURIComponent(getCurrentReturnTo())}`;
+}
+
+function setAuthNote(message = '') {
+  if (!authNoteEl) return;
+  authNoteEl.textContent = message;
+  authNoteEl.classList.toggle('hidden', !message);
+}
+
+function mapAuthError(code, detail = '') {
+  const messages = {
+    access_denied: '你取消了飞书授权，本次未登录。',
+    invalid_state: '登录状态校验失败，请重新发起飞书登录。',
+    login_failed: '飞书登录失败，请检查应用配置后重试。',
+    login_token_exchange_failed: '飞书登录失败：授权码换取访问令牌失败。请重点检查当前 App ID 对应的 App Secret 是否正确。',
+    login_user_info_failed: '飞书登录失败：已拿到访问令牌，但读取飞书用户信息失败。请检查应用权限或重新确认应用配置。',
+    tenant_not_allowed: '当前飞书企业不在允许名单内。',
+  };
+
+  const base = messages[code] || '飞书登录未完成，请稍后再试。';
+  const safeDetail = String(detail || '').trim();
+  return safeDetail ? `${base} 原始错误：${safeDetail}` : base;
+}
+
+function consumeAuthError() {
+  const url = new URL(location.href);
+  const authError = url.searchParams.get('auth_error');
+  const authErrorDetail = url.searchParams.get('auth_error_detail');
+
+  if (!authError) return;
+
+  pendingAuthMessage = mapAuthError(authError, authErrorDetail);
+  url.searchParams.delete('auth_error');
+  url.searchParams.delete('auth_error_detail');
+  history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
+function renderAuthState(authState = {}) {
+  if (!loginBtn || !userSessionEl) return;
+
+  const enabled = Boolean(authState.enabled);
+  const authenticated = Boolean(authState.authenticated && authState.user);
+
+  loginBtn.classList.toggle('hidden', !enabled || authenticated);
+  userSessionEl.classList.toggle('hidden', !enabled || !authenticated);
+
+  if (!enabled) {
+    setAuthNote('飞书登录暂未启用，当前仅显示公开文章。');
+    return;
+  }
+
+  if (!authenticated) {
+    setAuthNote(pendingAuthMessage || '当前仅显示公开文章，登录后可查看内部内容。');
+    pendingAuthMessage = '';
+    return;
+  }
+
+  const user = authState.user || {};
+  if (userNameEl) userNameEl.textContent = user.name || '飞书用户';
+
+  if (userAvatarEl) {
+    if (user.avatarUrl) {
+      userAvatarEl.src = user.avatarUrl;
+      userAvatarEl.classList.remove('hidden');
+    } else {
+      userAvatarEl.removeAttribute('src');
+      userAvatarEl.classList.add('hidden');
+    }
+  }
+
+  setAuthNote('');
+  pendingAuthMessage = '';
+}
+
+async function loadAuthState() {
+  consumeAuthError();
+
+  if (!loginBtn || !userSessionEl) return;
+
+  loginBtn.href = buildAuthUrl('login');
+
+  try {
+    const response = await fetch('/api/auth/feishu/me', { cache: 'no-store' });
+    const authState = await response.json();
+    renderAuthState(authState);
+  } catch (e) {
+    console.warn('failed to load auth state', e);
+    setAuthNote('飞书登录状态读取失败，请稍后刷新重试。');
+  }
+}
+
 async function openPost(slug, { updateHistory = true } = {}) {
   const target = posts.find((p) => p.slug === slug);
   if (!target) return;
@@ -639,15 +762,39 @@ async function openPost(slug, { updateHistory = true } = {}) {
       if (probe.ok && ct.includes('text/html')) {
         renderEmbeddedSlideDeck(slug, target);
       } else {
-        const text = await fetch(`./posts/${slug}.md`).then((r) => r.text());
+        const response = await fetch(`./posts/${slug}.md`);
+        if (response.status === 401) {
+          renderProtectedPostMessage();
+          viewer.classList.remove('hidden');
+          postsSection.classList.add('hidden');
+          document.body.classList.add('viewing-post');
+          return;
+        }
+        const text = await response.text();
         contentEl.innerHTML = mdToHtml(text);
       }
     } catch {
-      const text = await fetch(`./posts/${slug}.md`).then((r) => r.text());
+      const response = await fetch(`./posts/${slug}.md`);
+      if (response.status === 401) {
+        renderProtectedPostMessage();
+        viewer.classList.remove('hidden');
+        postsSection.classList.add('hidden');
+        document.body.classList.add('viewing-post');
+        return;
+      }
+      const text = await response.text();
       contentEl.innerHTML = mdToHtml(text);
     }
   } else {
-    const text = await fetch(`./posts/${slug}.md`).then((r) => r.text());
+    const response = await fetch(`./posts/${slug}.md`);
+    if (response.status === 401) {
+      renderProtectedPostMessage();
+      viewer.classList.remove('hidden');
+      postsSection.classList.add('hidden');
+      document.body.classList.add('viewing-post');
+      return;
+    }
+    const text = await response.text();
     contentEl.innerHTML = mdToHtml(text);
   }
 
@@ -789,6 +936,19 @@ if (summaryBtn) {
   });
 }
 
+if (loginBtn) {
+  loginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    location.assign(buildAuthUrl('login'));
+  });
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    location.assign(buildAuthUrl('logout'));
+  });
+}
+
 const THEME_KEY = 'irene-notes-theme';
 const THEME_LIGHT = 'light';
 const THEME_DARK = 'dark';
@@ -819,6 +979,10 @@ function initTheme() {
 }
 
 async function bootstrap() {
+  initTheme();
+  isMobileFilterOpen = false;
+  syncFilterPanelState();
+
   try {
     const data = await fetch('./posts/posts.json').then((r) => r.json());
     posts = normalizePosts(data);
@@ -827,9 +991,7 @@ async function bootstrap() {
     posts = [];
   }
 
-  initTheme();
-  isMobileFilterOpen = false;
-  syncFilterPanelState();
+  await loadAuthState();
   renderFilters();
   renderList();
 

@@ -74,3 +74,33 @@ Secrets 配好后，任选其一：
 - 已有 `wrangler.toml`
 - 已有 GitHub Actions 自动部署工作流
 - 已推送到 GitHub `main`
+
+## 7. 飞书登录额外配置
+
+如果要启用飞书登录，再补这几项：
+
+1. 在 Cloudflare Pages 项目设置里进入：
+   `Settings -> Variables and Secrets`
+2. 添加必填环境变量：
+   - `FEISHU_APP_ID`
+   - `FEISHU_APP_SECRET`
+   - `AUTH_SESSION_SECRET`
+3. 按需添加可选变量：
+   - `FEISHU_SCOPE`
+   - `FEISHU_REDIRECT_URI`
+   - `FEISHU_ALLOWED_TENANT_KEYS`
+   - `AUTH_SESSION_MAX_AGE_SEC`
+4. 飞书开放平台应用里加入回调地址：
+   `https://irene-notes.pages.dev/api/auth/feishu/callback`
+
+如果要本地联调，还可以在仓库根目录创建 `.dev.vars`：
+
+```bash
+cp .dev.vars.example .dev.vars
+npm run build
+npx wrangler pages dev dist --port 8788
+```
+
+本地回调地址对应填写为：
+
+`http://127.0.0.1:8788/api/auth/feishu/callback`

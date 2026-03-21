@@ -70,6 +70,25 @@ body[data-theme='light'] .chip.active {
   color: #fff;
 }
 
+body[data-theme='light'] .user-session {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+body[data-theme='light'] .user-avatar {
+  border-color: rgba(31, 42, 61, 0.12);
+}
+
+body[data-theme='light'] .post-visibility.is-public {
+  background: #edf3ff;
+  color: #38527c;
+}
+
+body[data-theme='light'] .post-visibility.is-internal {
+  background: #fff4de;
+  color: #9a6600;
+  border-color: #f3d18a;
+}
+
 * { box-sizing: border-box; }
 html, body {
   width: 100%;
@@ -115,6 +134,101 @@ body {
   align-items: center;
   justify-content: flex-end;
   margin-left: auto;
+  gap: 10px;
+  min-width: 0;
+}
+
+.auth-controls {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  min-width: 0;
+}
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.auth-note {
+  max-width: 360px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+  line-height: 1.5;
+}
+
+.btn-feishu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(245, 250, 255, 0.96), rgba(229, 239, 255, 0.9));
+  color: #24467a;
+  border-color: rgba(153, 184, 232, 0.65);
+  font-weight: 700;
+}
+
+.btn-feishu:hover {
+  background: linear-gradient(180deg, rgba(250, 252, 255, 1), rgba(234, 242, 255, 0.96));
+}
+
+.feishu-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.feishu-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.user-session {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(23, 35, 63, 0.72);
+}
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.user-meta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.user-meta strong,
+.user-meta span {
+  display: block;
+  text-align: left;
+}
+
+.user-meta strong {
+  font-size: 14px;
+}
+
+.user-meta span {
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .site-header h1 {
@@ -136,16 +250,16 @@ body {
 }
 
 .theme-toggle-icon {
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   padding: 0;
-  border-radius: 50%;
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin: 0;
   vertical-align: middle;
-  flex: 0 0 30px;
+  flex: 0 0 38px;
 }
 
 .theme-icon {
@@ -172,6 +286,7 @@ body {
   padding: 18px;
   max-width: 100%;
 }
+
 .post-list { list-style: none; margin: 0; padding: 0; }
 .post-list li { padding: 14px 0 16px; border-bottom: 1px dashed var(--border); }
 .post-list li:last-child { border-bottom: none; }
@@ -189,7 +304,52 @@ body {
   overflow: hidden;
 }
 
-.post-meta { color: var(--muted); font-size: 12px; margin-top: 8px; }
+.post-meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.post-visibility {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.post-visibility.is-public {
+  background: rgba(110, 168, 255, 0.08);
+  color: #9ec0ff;
+}
+
+.post-visibility.is-internal {
+  background: rgba(255, 176, 32, 0.14);
+  border-color: rgba(255, 176, 32, 0.28);
+  color: #ffcf7b;
+}
+
+.protected-post {
+  display: grid;
+  gap: 10px;
+}
+
+.protected-post h2,
+.protected-post p {
+  margin: 0;
+}
+
+.protected-post-actions {
+  margin-top: 6px;
+}
 .btn {
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -631,8 +791,22 @@ body[data-theme='light'] .month-select {
     margin-left: auto;
     align-items: center;
     justify-content: flex-end;
-    width: auto;
+    width: 100%;
     min-width: 0;
+    gap: 8px;
+  }
+
+  .auth-controls {
+    width: 100%;
+    justify-items: end;
+  }
+
+  .auth-row {
+    width: 100%;
+  }
+
+  .auth-note {
+    max-width: none;
   }
 
   .site-header h1 {
@@ -651,8 +825,8 @@ body[data-theme='light'] .month-select {
   }
 
   #theme-toggle.theme-toggle-icon {
-    width: 30px;
-    height: 30px;
+    width: 38px;
+    height: 38px;
     padding: 0;
   }
 

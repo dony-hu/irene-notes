@@ -145,6 +145,14 @@ function pickBoolean(...values) {
   return false;
 }
 
+function normalizeVisibility(value) {
+  const raw = pickString(value).toLowerCase();
+  if (!raw) return 'public';
+  if (raw === 'public' || raw === 'external') return 'public';
+  if (raw === 'internal' || raw === 'private') return 'internal';
+  return '';
+}
+
 function firstHeading(markdown = '') {
   const match = normalizeLineEndings(markdown).match(/^#\s+(.+)$/m);
   return match ? match[1].trim() : '';
@@ -261,6 +269,7 @@ function toRecord(post) {
     slug: post.slug,
     date: post.date,
     tags: post.tags,
+    visibility: post.visibility,
   };
 
   if (post.datetime) record.datetime = post.datetime;
@@ -301,6 +310,7 @@ export function collectPosts(rootDir) {
     const tags = normalizeTags(data.tags);
     const typeValue = pickString(data.type);
     const type = typeValue || undefined;
+    const visibility = normalizeVisibility(data.visibility || data.access || data.audience);
     const url = pickString(data.url) || (type === 'webslides' ? `./${slug}.html` : undefined);
     const summary = pickString(data.summary, firstSummary(content), fallbackSummary(title)) || undefined;
     const fileErrors = [];
@@ -311,6 +321,10 @@ export function collectPosts(rootDir) {
 
     if (!date) {
       fileErrors.push(`${file}: missing date (add front matter date: YYYY-MM-DD)`);
+    }
+
+    if (!visibility) {
+      fileErrors.push(`${file}: invalid visibility (use public/external or internal/private)`);
     }
 
     if (fileErrors.length) {
@@ -327,6 +341,7 @@ export function collectPosts(rootDir) {
       type,
       url,
       summary,
+      visibility,
       sourcePath: absolutePath,
       fileName: file,
       content,
