@@ -26,18 +26,39 @@ node scripts/sync-system-from-jerry.mjs ../jerry-notes --dry-run
 
 ## 当前同步范围
 
-脚本会同步这些系统文件：
+脚本现在分两类处理：
 
-- 前端与构建：`app.js`、`index.html`、`styles.css`、`slides.css`
-- 构建脚本：`scripts/build-site.mjs`、`scripts/content-utils.mjs`、`scripts/generate-posts-index.mjs`
-- 导出脚本：`scripts/export-pdf.js`、`scripts/generate-wechat-article.js`、`scripts/md-to-slides.js`
-- 部署配置：`.github/workflows/deploy-pages-direct-upload.yml`、`wrangler.toml`、`_headers`
-- 基础元信息：`package.json`、`README.md`、`.gitignore`、`.node-version`
+1. 自动同步稳定共享文件
+   - 部署与基础配置：`.dev.vars.example`、`.github/workflows/deploy-pages-direct-upload.yml`、`.gitignore`、`.node-version`、`wrangler.toml`、`_headers`
+   - 认证与访问控制：`functions/_lib/feishu-auth.js`、`functions/api/auth/feishu/*`、`functions/posts/_middleware.js`、`functions/posts/[slug].js`、`functions/posts/posts.json.js`
+   - 通用脚本：`scripts/export-pdf.js`、`scripts/generate-posts-index.mjs`、`scripts/generate-wechat-article.js`、`scripts/slides-data-to-md.js`
+   - 通用样式/模板：`slides.css`、`slides-template.md`
+   - `package.json`
+     - 以上游为主
+     - 但会保留 Irene 本地独有的 script/dependency 键
 
-脚本会自动把品牌与项目名从 Jerry 版替换为 Irene 版。
+2. 仅报告差异，不自动覆盖的混合文件
+   - `README.md`
+   - `index.html`
+   - `app.js`
+   - `styles.css`
+   - `scripts/build-site.mjs`
+   - `scripts/content-utils.mjs`
+   - `scripts/md-to-slides.js`
+   - `functions/_lib/post-access.js`
+   - `functions/[slug].js`
+   - `functions/slides/_middleware.js`
+   - `functions/slides/[slug].js`
+
+这些文件已经混合了“共享引擎能力”和“Irene 站点自己的结构/文案/路由约定”。
+脚本会在输出里把它们列入 `manualReviewFiles`，提醒你人工判断是否要移植上游改动。
+
+脚本仍会自动把品牌与项目名从 Jerry 版替换为 Irene 版。
 
 ## 维护原则
 
 - 新功能先在 `jerry-notes` 做，再同步到 `irene-notes`
 - 内容类改动只留在各自 repo，不互相覆盖
-- 如果新增了公共脚本或公共页面文件，把它加入 `scripts/sync-system-from-jerry.mjs` 的 `SYNC_FILES`
+- 新增共享文件时，先判断它是“稳定共享文件”还是“混合文件”
+- 只有稳定共享文件才加入自动同步清单
+- 如果某个文件同时承载站点结构、品牌文案或本地路由，不要再做整文件覆盖同步

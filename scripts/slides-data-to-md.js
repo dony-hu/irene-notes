@@ -2,8 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const input = process.argv[2] || 'D:/Code/jerry-notes/ai-transformation-data.js';
-const output = process.argv[3] || 'D:/Code/jerry-notes/posts/ai-talking.md';
+const input = process.argv[2] || 'D:/Code/irene-notes/ai-transformation-data.js';
+const output = process.argv[3] || 'D:/Code/irene-notes/posts/ai-talking.md';
 
 const txt = fs.readFileSync(path.resolve(input), 'utf8');
 const m = txt.match(/window\.AI_TALKING_SLIDES\s*=\s*(\[[\s\S]*\]);?/);

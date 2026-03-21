@@ -4,6 +4,8 @@ date: 2026-03-17
 tags:
   - 标签1
   - 标签2
+# visibility 省略时默认公开；内部资料请写 internal
+# visibility: internal
 # type 省略时默认按普通文章处理；需要幻灯片时改成 webslides
 # type: webslides
 # url 省略时，webslides 默认生成 ./<slug>.html
@@ -15,6 +17,9 @@ tags:
 这里开始写正文。
 
 如果这是普通文章，构建后会自动出现在首页列表里。
+
+如果这篇内容只希望登录后查看，可以在 front matter 里加上
+`visibility: internal`。
 
 如果这是 `webslides`，请在 front matter 里加上 `type: webslides`，
 正文继续用当前仓库已有的 slides Markdown 语法来写。

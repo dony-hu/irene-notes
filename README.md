@@ -26,6 +26,24 @@ python -m http.server 8787 --directory dist
 
 - http://127.0.0.1:8787
 
+如果要本地联调飞书登录，需要使用 Cloudflare Pages Functions 本地运行时：
+
+```bash
+cp .dev.vars.example .dev.vars
+npm run build
+npx wrangler pages dev dist --port 8788
+```
+
+然后打开：
+
+- http://127.0.0.1:8788
+
+说明：
+
+- `.dev.vars` 里填写本地飞书应用凭证
+- 本地调试时，需要把 `http://127.0.0.1:8788/api/auth/feishu/callback` 加到飞书应用的重定向 URL
+- 纯静态预览依然可以继续用 `python -m http.server`，但那种方式不会运行 `/api/auth/feishu/*` 这些函数端点
+
 如果只是更新文章索引，不想完整构建，也可以执行：
 
 ```bash
@@ -64,6 +82,7 @@ date: 2026-03-17
 tags:
   - AI
   - Notes
+visibility: public
 # type: webslides
 # draft: true
 ---
@@ -76,6 +95,8 @@ tags:
 - `slug` 默认来自文件名，例如 `posts/hello-world.md` -> `hello-world`
 - `title` 和 `date` 建议必填
 - `tags` 可选
+- `visibility` 可选；默认 `public`
+- `visibility: internal` 的文章只对已登录飞书用户开放
 - `type: webslides` 时，构建会自动生成 `./<slug>.html`
 - `draft: true` 的文章不会进入站点产物
 - 没有 front matter 的 Markdown 不会自动发布
@@ -102,6 +123,40 @@ tags:
 详细步骤见：
 
 - `docs/CLOUDFLARE-PAGES-CHECKLIST.md`
+
+如果启用飞书登录，还需要在 Cloudflare Pages 项目里配置这些运行时环境变量：
+
+- `FEISHU_APP_ID`：飞书应用 App ID
+- `FEISHU_APP_SECRET`：飞书应用 App Secret
+- `AUTH_SESSION_SECRET`：用于签名登录态 Cookie 的长随机字符串
+
+可选变量：
+
+- `FEISHU_SCOPE`：授权时请求的用户权限，默认留空即可；需要 `refresh_token` 时可加 `offline_access`
+- `FEISHU_REDIRECT_URI`：自定义 OAuth 回调地址；不填则默认使用 `https://<当前域名>/api/auth/feishu/callback`
+- `FEISHU_ALLOWED_TENANT_KEYS`：限制允许登录的飞书企业，多个值用逗号分隔
+- `AUTH_SESSION_MAX_AGE_SEC`：登录态最大有效期，默认最多 2 小时
+
+飞书应用侧需要完成两项配置：
+
+1. 在 **安全设置** 中加入回调地址：
+   `https://irene-notes.pages.dev/api/auth/feishu/callback`
+2. 如果你在 `FEISHU_SCOPE` 中声明了额外 scope，需要先在飞书开放平台里为应用申请对应权限
+
+## 内外部访问控制
+
+当前站点已经支持文章的 `public / internal` 双可见性：
+
+- 未登录访客：
+  - 只能看到 `public` 文章
+- 已登录飞书用户：
+  - 可以看到 `public + internal` 文章
+- 服务端会拦截：
+  - `posts/posts.json`
+  - `posts/*.md`
+  - `type: webslides` 生成的 `/<slug>.html`
+
+这意味着内部文章不仅在前端列表里隐藏，也不能通过直链绕过查看。
 
 ## 当前约束
 

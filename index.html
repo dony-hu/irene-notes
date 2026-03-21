@@ -9,7 +9,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="icon" type="image/png" href="./assets/tiger-mouse-favicon.png?v=202603211809" />
-  <link rel="stylesheet" href="./styles.css?v=202603210100-headerfinal" />
+  <link rel="stylesheet" href="./styles.css?v=202603212230-auth" />
 </head>
 <body>
   <header class="site-header">
@@ -24,6 +24,18 @@
           <button id="theme-toggle" class="btn btn-small theme-toggle-icon" type="button" aria-label="切换主题" title="切换主题">
             <span class="theme-icon" aria-hidden="true">🌙</span>
           </button>
+          <div class="auth-controls">
+            <a id="login-btn" class="btn btn-small hidden" href="/api/auth/feishu/login">飞书登录</a>
+            <div id="user-session" class="user-session hidden">
+              <img id="user-avatar" class="user-avatar hidden" alt="飞书头像" />
+              <div class="user-meta">
+                <strong id="user-name">飞书用户</strong>
+                <span id="user-tenant">已通过飞书登录</span>
+              </div>
+              <button id="logout-btn" class="btn btn-small" type="button">退出</button>
+            </div>
+            <div id="auth-note" class="auth-note hidden" aria-live="polite"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -33,6 +45,7 @@
     <section class="content-column">
       <section id="posts" class="card">
         <h2>最近更新</h2>
+        <div id="access-banner" class="access-banner hidden" aria-live="polite"></div>
         <ul id="post-list" class="post-list"></ul>
       </section>
 
@@ -75,6 +88,6 @@
     <div class="container">© <span id="year"></span> Irene's Notes</div>
   </footer>
 
-  <script src="./app.js?v=202603181145"></script>
+  <script src="./app.js?v=202603212230-auth"></script>
 </body>
 </html>
