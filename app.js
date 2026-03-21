@@ -719,7 +719,7 @@ function renderAuthState(authState = {}) {
   const user = authState.user || {};
   if (userNameEl) userNameEl.textContent = user.name || '飞书用户';
   if (userTenantEl) {
-    userTenantEl.textContent = user.tenantKey ? `tenant: ${user.tenantKey}` : '已通过飞书登录';
+    userTenantEl.textContent = '已通过飞书登录';
   }
 
   if (userAvatarEl) {
