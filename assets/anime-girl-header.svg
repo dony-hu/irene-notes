@@ -1,0 +1,61 @@
+<svg width="1600" height="480" viewBox="0 0 1600 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="480" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE6F2"/>
+      <stop offset="0.55" stop-color="#F7E9FF"/>
+      <stop offset="1" stop-color="#E7F3FF"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="1120" y1="110" x2="1120" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5A4A8A"/>
+      <stop offset="1" stop-color="#3F3368"/>
+    </linearGradient>
+    <linearGradient id="kimono" x1="1080" y1="250" x2="1220" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD2E2"/>
+      <stop offset="1" stop-color="#F7A8C4"/>
+    </linearGradient>
+    <filter id="soft" x="0" y="0" width="1600" height="480" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="24"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="480" fill="url(#bg)"/>
+
+  <g opacity="0.4" filter="url(#soft)">
+    <circle cx="220" cy="120" r="70" fill="#FFD5EA"/>
+    <circle cx="350" cy="80" r="48" fill="#CFE6FF"/>
+    <circle cx="480" cy="140" r="60" fill="#E6D8FF"/>
+    <circle cx="1460" cy="90" r="72" fill="#FFDDEB"/>
+  </g>
+
+  <g opacity="0.28" stroke="#FFFFFF" stroke-width="2">
+    <path d="M90 360C230 300 360 320 490 350"/>
+    <path d="M220 380C340 340 470 350 600 380"/>
+    <path d="M70 420C220 370 360 390 520 430"/>
+  </g>
+
+  <g transform="translate(980 62)">
+    <ellipse cx="140" cy="270" rx="126" ry="122" fill="url(#hair)"/>
+    <path d="M44 274C44 214 82 170 140 170C198 170 236 214 236 274V350H44V274Z" fill="url(#kimono)"/>
+    <path d="M98 265L142 305L184 265" stroke="#FFF6FB" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <ellipse cx="140" cy="180" rx="86" ry="82" fill="#FFE9F2"/>
+    <path d="M66 174C72 124 102 94 140 94C178 94 208 124 214 174C204 142 180 126 140 126C100 126 76 142 66 174Z" fill="url(#hair)"/>
+
+    <circle cx="114" cy="178" r="6" fill="#4B3D70"/>
+    <circle cx="166" cy="178" r="6" fill="#4B3D70"/>
+    <path d="M126 208C132 214 148 214 154 208" stroke="#E98AAE" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="92" cy="196" r="9" fill="#FFC5DA" opacity="0.7"/>
+    <circle cx="188" cy="196" r="9" fill="#FFC5DA" opacity="0.7"/>
+
+    <path d="M70 132L52 114" stroke="#D79BD8" stroke-width="8" stroke-linecap="round"/>
+    <path d="M210 132L228 114" stroke="#D79BD8" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="50" cy="112" r="9" fill="#F9C1DA"/>
+    <circle cx="230" cy="112" r="9" fill="#F9C1DA"/>
+  </g>
+
+  <g transform="translate(116 130)">
+    <text x="0" y="46" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="54" font-weight="700" fill="#5C4A85">Irene Notes</text>
+    <text x="2" y="95" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="28" fill="#7E6BAF">温柔记录每一天的小想法与小成长</text>
+    <text x="2" y="136" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="22" fill="#9B8CC6">A calm little corner for stories, ideas, and daily sparks.</text>
+  </g>
+</svg>
