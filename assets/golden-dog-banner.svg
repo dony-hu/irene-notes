@@ -1,0 +1,39 @@
+<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="180" rx="18" fill="#F5E8D0"/>
+  <ellipse cx="500" cy="150" rx="120" ry="14" fill="#E7D9B9"/>
+  <ellipse cx="165" cy="150" rx="120" ry="14" fill="#E7D9B9"/>
+
+  <!-- Golden Retriever Dog Body -->
+  <ellipse cx="380" cy="110" rx="110" ry="65" fill="#D4A046"/>
+  <!-- Dog Head -->
+  <circle cx="280" cy="85" r="45" fill="#D4A046"/>
+  <!-- Dog Ears -->
+  <ellipse cx="245" cy="55" rx="18" ry="28" fill="#B8860B"/>
+  <ellipse cx="315" cy="55" rx="18" ry="28" fill="#B8860B"/>
+  <!-- Inner Ears -->
+  <ellipse cx="245" cy="55" rx="8" ry="14" fill="#F5DEB3"/>
+  <ellipse cx="315" cy="55" rx="8" ry="14" fill="#F5DEB3"/>
+  <!-- Dog Eyes -->
+  <ellipse cx="262" cy="75" rx="6" ry="8" fill="#1F1F1F"/>
+  <ellipse cx="298" cy="75" rx="6" ry="8" fill="#1F1F1F"/>
+  <circle cx="262" cy="75" r="3" fill="#FFFFFF"/>
+  <circle cx="298" cy="75" r="3" fill="#FFFFFF"/>
+  <!-- Dog Nose -->
+  <ellipse cx="280" cy="98" rx="10" ry="7" fill="#8B4513"/>
+  <!-- Happy Mouth -->
+  <path d="M270 112Q280 122 290 112" stroke="#8B4513" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Muzzle highlight -->
+  <ellipse cx="280" cy="88" rx="15" ry="10" fill="#F5DEB3"/>
+  <!-- Dog Tail -->
+  <path d="M470 90C500 60 520 100 540 80" stroke="#D4A046" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <!-- Legs -->
+  <ellipse cx="320" cy="152" rx="18" ry="12" fill="#B8860B"/>
+  <ellipse cx="360" cy="155" rx="18" ry="15" fill="#B8860B"/>
+  <ellipse cx="400" cy="155" rx="18" ry="15" fill="#B8860B"/>
+  <ellipse cx="440" cy="152" rx="18" ry="12" fill="#B8860B"/>
+
+  <!-- Playful playful stars -->
+  <path d="M60 42L64 51L73 55L64 59L60 68L56 59L47 55L56 51L60 42Z" fill="#FFD977"/>
+  <path d="M559 33L562 40L569 43L562 46L559 53L556 46L549 43L556 40L559 33Z" fill="#FFD977"/>
+  <path d="M520 120L523 126L529 128L523 131L520 136L517 131L511 128L517 126L520 120Z" fill="#FFD977"/>
+</svg>
