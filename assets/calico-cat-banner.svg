@@ -1,0 +1,67 @@
+<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="180" rx="18" fill="#F0F4F8"/>
+  <ellipse cx="500" cy="150" rx="120" ry="14" fill="#D8E2EC"/>
+  <ellipse cx="165" cy="150" rx="120" ry="14" fill="#D8E2EC"/>
+
+  <!-- Calico Cat Body -->
+  <ellipse cx="370" cy="115" rx="105" ry="60" fill="#F5F0E6"/>
+
+  <!-- Cat Head -->
+  <circle cx="270" cy="80" r="48" fill="#F5F0E6"/>
+
+  <!-- Calico Patches on Head -->
+  <ellipse cx="240" cy="50" rx="16" ry="20" fill="#D4A046"/>
+  <ellipse cx="300" cy="50" rx="16" ry="20" fill="#2F2F2F"/>
+  <ellipse cx="270" cy="55" rx="12" ry="8" fill="#D4A046"/>
+  <ellipse cx="255" cy="90" rx="10" ry="12" fill="#2F2F2F"/>
+
+  <!-- Cat Ears -->
+  <path d="M230 38L215 10L245 28Z" fill="#F5F0E6" stroke="#B8B8B8" stroke-width="1"/>
+  <path d="M310 38L325 10L295 28Z" fill="#F5F0E6" stroke="#B8B8B8" stroke-width="1"/>
+
+  <!-- Inner Ears -->
+  <path d="M224 30L218 18L236 24Z" fill="#F7C6C6"/>
+  <path d="M316 30L322 18L304 24Z" fill="#F7C6C6"/>
+
+  <!-- Cat Eyes -->
+  <ellipse cx="252" cy="72" rx="7" ry="9" fill="#1F1F1F"/>
+  <ellipse cx="288" cy="72" rx="7" ry="9" fill="#1F1F1F"/>
+  <circle cx="252" cy="72" r="3" fill="#FFFFFF"/>
+  <circle cx="288" cy="72" r="3" fill="#FFFFFF"/>
+
+  <!-- Cat Nose -->
+  <polygon points="270 88 263 100 277 100" fill="#F7A8A8"/>
+
+  <!-- Happy Smiling Mouth -->
+  <path d="M262 108Q270 118 278 108" stroke="#2F2F2F" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Whiskers -->
+  <path d="M210 98L235 102" stroke="#2F2F2F" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M208 108L235 108" stroke="#2F2F2F" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M210 118L235 114" stroke="#2F2F2F" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M305 98L280 102" stroke="#2F2F2F" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M307 108L280 108" stroke="#2F2F2F" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M305 118L280 114" stroke="#2F2F2F" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Body Patches -->
+  <ellipse cx="320" cy="95" rx="18" ry="15" fill="#D4A046"/>
+  <ellipse cx="410" cy="110" rx="20" ry="18" fill="#2F2F2F"/>
+  <ellipse cx="360" cy="140" rx="15" ry="10" fill="#D4A046"/>
+
+  <!-- Cat Tail -->
+  <path d="M460 100C490 60 510 100 530 80" stroke="#F5F0E6" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <path d="M460 100C490 60 510 100 530 80" stroke="#D4A046" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <path d="M490 88C500 75 508 88 515 82" fill="#2F2F2F"/>
+
+  <!-- Legs -->
+  <ellipse cx="310" cy="152" rx="16" ry="12" fill="#F5F0E6" stroke="#B8B8B8" stroke-width="1"/>
+  <ellipse cx="350" cy="155" rx="16" ry="15" fill="#D4A046"/>
+  <ellipse cx="390" cy="155" rx="16" ry="15" fill="#2F2F2F"/>
+  <ellipse cx="430" cy="152" rx="16" ry="12" fill="#F5F0E6" stroke="#B8B8B8" stroke-width="1"/>
+
+  <!-- Decorative Stars -->
+  <path d="M60 42L64 51L73 55L64 59L60 68L56 59L47 55L56 51L60 42Z" fill="#D4A046"/>
+  <path d="M559 33L562 40L569 43L562 46L559 53L556 46L549 43L556 40L559 33Z" fill="#D4A046"/>
+  <path d="M520 120L523 126L529 128L523 131L520 136L517 131L511 128L517 126L520 120Z" fill="#D4A046"/>
+  <path d="M38 100L40 106L46 108L40 111L38 116L35 111L29 108L35 106L38 100Z" fill="#D4A046"/>
+</svg>
