@@ -1,0 +1,43 @@
+<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="180" rx="18" fill="#F8EFD7"/>
+  <ellipse cx="500" cy="150" rx="120" ry="14" fill="#E7D9B9"/>
+  <ellipse cx="165" cy="150" rx="120" ry="14" fill="#E7D9B9"/>
+
+  <!-- mouse -->
+  <circle cx="160" cy="108" r="30" fill="#A8AAB4"/>
+  <circle cx="136" cy="87" r="12" fill="#A8AAB4"/>
+  <circle cx="184" cy="87" r="12" fill="#A8AAB4"/>
+  <circle cx="136" cy="87" r="7" fill="#F7D7D7"/>
+  <circle cx="184" cy="87" r="7" fill="#F7D7D7"/>
+  <circle cx="150" cy="108" r="4" fill="#212121"/>
+  <circle cx="172" cy="108" r="4" fill="#212121"/>
+  <ellipse cx="161" cy="119" rx="4.5" ry="3.8" fill="#EF9FA4"/>
+  <path d="M123 114H136" stroke="#6A6A72" stroke-width="2" stroke-linecap="round"/>
+  <path d="M186 114H199" stroke="#6A6A72" stroke-width="2" stroke-linecap="round"/>
+  <path d="M121 124H134" stroke="#6A6A72" stroke-width="2" stroke-linecap="round"/>
+  <path d="M188 124H201" stroke="#6A6A72" stroke-width="2" stroke-linecap="round"/>
+  <path d="M191 133C214 132 226 147 235 156" stroke="#A8AAB4" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- cat -->
+  <ellipse cx="470" cy="118" rx="72" ry="50" fill="#D79962"/>
+  <path d="M421 78L442 90L428 106L417 92L421 78Z" fill="#D79962"/>
+  <path d="M519 78L498 90L512 106L523 92L519 78Z" fill="#D79962"/>
+  <path d="M427 87L437 93L431 101Z" fill="#F5D9BD"/>
+  <path d="M513 87L503 93L509 101Z" fill="#F5D9BD"/>
+  <ellipse cx="470" cy="128" rx="30" ry="22" fill="#F7E7D4"/>
+  <ellipse cx="451" cy="114" rx="6" ry="8" fill="#1F1F1F"/>
+  <ellipse cx="489" cy="114" rx="6" ry="8" fill="#1F1F1F"/>
+  <ellipse cx="470" cy="126" rx="5" ry="4" fill="#CA7D63"/>
+  <path d="M466 132C468 136 472 136 474 132" stroke="#8C4D3A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M428 123H447" stroke="#8C4D3A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M493 123H512" stroke="#8C4D3A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M430 134H449" stroke="#8C4D3A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M491 134H510" stroke="#8C4D3A" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- chasing line -->
+  <path d="M239 156C298 133 343 108 401 104" stroke="#C17A4D" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 7"/>
+
+  <!-- playful stars -->
+  <path d="M74 42L78 51L87 55L78 59L74 68L70 59L61 55L70 51L74 42Z" fill="#FFD977"/>
+  <path d="M559 33L562 40L569 43L562 46L559 53L556 46L549 43L556 40L559 33Z" fill="#FFD977"/>
+</svg>

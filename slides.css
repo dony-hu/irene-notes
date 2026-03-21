@@ -1,0 +1,215 @@
+:root {
+  --bg: #020617;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --deck-bg: color-mix(in srgb, #121b2e 90%, black 10%);
+  --deck-border: #23304f;
+  --slide-overlay-a: rgba(15,23,42,.85);
+  --slide-overlay-b: rgba(15,23,42,.55);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background: radial-gradient(circle at top left, #020617 0%, #020617 45%, #000000 100%);
+  color: var(--text);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+
+body.theme-light {
+  --bg: #f5f8fc;
+  --text: #1f2a3d;
+  --muted: #5d6b86;
+  --deck-bg: #ffffff;
+  --deck-border: #d8e1f2;
+  --slide-overlay-a: rgba(247,250,255,.84);
+  --slide-overlay-b: rgba(240,246,255,.62);
+  background: linear-gradient(180deg, #f8fbff, #edf3fb);
+}
+.hidden{display:none!important}
+
+.ai-transformation-root{
+  width:100%;min-height:100vh;padding:22px 0 40px;display:flex;align-items:flex-start;justify-content:center;
+}
+.ai-deck-shell{
+  width:min(1100px,94vw);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  background:var(--deck-bg);
+  border:1px solid var(--deck-border);
+  border-radius:14px;
+  padding:16px;
+}
+.ai-deck-shell.is-fullscreen{
+  width:100%;
+  max-width:1440px;
+  border:none;
+  background:transparent;
+  border-radius:0;
+  padding:0;
+}
+.ai-deck-shell:fullscreen{
+  width:100%;
+  max-width:none;
+  border:none;
+  background:radial-gradient(circle at top left, #020617 0%, #020617 45%, #000000 100%);
+  border-radius:0;
+  padding:24px;
+}
+.ai-deck-topbar{display:flex;align-items:center;justify-content:space-between;font-size:.82rem;color:var(--muted);gap:12px}
+.ai-deck-logo{letter-spacing:.08em;color:#93c5fd;font-weight:600}
+.ai-deck-shortcuts{opacity:.9}
+.back{color:#93c5fd;text-decoration:none}
+.back:hover{text-decoration:underline}
+.slides-fullscreen-btn{border:1px solid #2e456f;background:#162544;color:#d7e2ff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px}
+.slides-fullscreen-btn:hover{background:#214a86;color:#fff}
+
+.ai-deck-main{display:flex;align-items:center;justify-content:center;gap:10px}
+
+.slide-nav-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--deck-border);
+  background: color-mix(in srgb, var(--deck-bg) 82%, #000 18%);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.slide-nav-btn:hover { filter: brightness(1.08); }
+
+.ai-slide-frame{
+  position:relative;width:100%;max-width:1440px;aspect-ratio:16/9;border-radius:20px;
+  background:linear-gradient(to top, var(--slide-overlay-a), var(--slide-overlay-b)), url('./MachineryAgePage.jpg') center center/cover no-repeat;
+  box-shadow:0 30px 80px rgba(15,23,42,.9);overflow:hidden;
+}
+.ai-slide-inner{position:absolute;inset:0;padding:32px 52px;display:flex;flex-direction:column;justify-content:space-between}
+.ai-slide-header{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.ai-slide-tag{font-size:.95rem;letter-spacing:.08em;text-transform:uppercase;color:#e5e7eb}
+.ai-slide-progress{display:flex;align-items:center;gap:12px;font-size:.82rem}
+.ai-slide-progress-bar{width:140px;height:3px;border-radius:999px;background:rgba(148,163,184,.4);overflow:hidden}
+.ai-slide-progress-fill{height:100%;background:linear-gradient(to right,#38bdf8,#6366f1)}
+
+.ai-slide-main{flex:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px}
+.ai-slide-main-title-only{align-items:center;text-align:center}
+.ai-slide-title{font-size:2.2rem;line-height:1.32;margin:0 0 10px;font-weight:700;letter-spacing:.01em}
+.ai-slide-title-key{font-size:2.7rem;color:#e0f2fe}
+.ai-slide-title-compact{font-size:2.25rem}
+.ai-slide-subtitle{font-size:1.1rem;color:#d1d5db;margin:0 0 18px;line-height:1.6}
+.ai-slide-subtitle-emphasis{font-size:1.2rem;color:#a5b4fc}
+.ai-slide-bullets{margin:10px 0 0;padding-left:0;font-size:1.03rem;line-height:1.75;max-width:94%;list-style:none}
+.ai-slide-bullets li{margin:8px 0;padding-left:.1rem}
+.ai-slide-bullets li+li{margin-top:10px}
+.ai-slide-bullets strong{color:#60a5fa;font-weight:700}
+
+.ai-slide-bullets .bullet-section{
+  display:flex;
+  align-items:flex-start;
+  gap:.45rem;
+  margin-top:14px;
+  font-size:1.06rem;
+}
+.ai-slide-bullets .bullet-index{
+  min-width:1.4rem;
+  color:#93c5fd;
+  font-weight:700;
+}
+.ai-slide-bullets .bullet-sub{
+  margin-left:1.85rem;
+  position:relative;
+}
+.ai-slide-bullets .bullet-sub::before{
+  content:'•';
+  position:absolute;
+  left:-0.95rem;
+  color:#9fb5d8;
+}
+
+.ai-slide-buttons{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px}
+.ai-slide-button{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:999px;font-size:.9rem;text-decoration:none;border:1px solid rgba(148,163,184,.7);color:#e5e7eb;background:rgba(15,23,42,.85)}
+.ai-slide-button.primary{background:linear-gradient(to right,#38bdf8,#6366f1);border-color:transparent;color:#020617}
+.ai-slide-button.secondary{background:transparent}
+
+.ai-slide-emphasis{margin-top:16px;font-size:1.08rem;color:#fde68a}
+.ai-slide-footer{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:#9ca3af;gap:12px}
+.ai-slide-footer-center{opacity:.9}
+
+body.theme-light .ai-slide-title,
+body.theme-light .ai-slide-title-key,
+body.theme-light .ai-slide-subtitle,
+body.theme-light .ai-slide-bullets,
+body.theme-light .ai-slide-tag,
+body.theme-light .ai-slide-footer,
+body.theme-light .ai-slide-progress,
+body.theme-light .ai-slide-emphasis {
+  color: #1f2a3d;
+}
+
+body.theme-light .ai-slide-bullets strong { color: #204c9a; }
+body.theme-light .ai-slide-bullets .bullet-index { color: #2f5ca8; }
+body.theme-light .ai-slide-bullets .bullet-sub::before { color: #516d99; }
+
+.ai-slide-notes{position:absolute;right:24px;bottom:24px;max-width:min(42%,520px);background:rgba(2,6,23,.88);border:1px solid rgba(148,163,184,.3);border-radius:12px;padding:14px 16px}
+.ai-slide-notes-label{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:8px}
+.ai-slide-notes p{margin:0;line-height:1.6;font-size:.9rem;color:#dbeafe}
+
+.ai-overview-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:4px}
+.ai-overview-item{border:1px solid rgba(148,163,184,.35);background:rgba(15,23,42,.65);color:#e5e7eb;border-radius:10px;padding:10px;text-align:left;cursor:pointer}
+.ai-overview-item-active{outline:2px solid #60a5fa}
+.ai-overview-index{font-size:.75rem;color:#93c5fd}
+.ai-overview-tag{font-size:.7rem;color:#94a3b8;margin-top:4px}
+.ai-overview-title{font-size:.85rem;line-height:1.35;margin-top:6px}
+
+body.embedded-mode {
+  margin: 0;
+  overflow: hidden;
+}
+
+body.embedded-mode .ai-transformation-root {
+  min-height: auto;
+  padding: 0;
+  display: block;
+}
+
+body.embedded-mode .ai-deck-shell {
+  width: 100%;
+  max-width: none;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  gap: 0;
+}
+
+body.embedded-mode .ai-deck-topbar {
+  display: none;
+}
+
+/* 嵌入模式也保留鼠标翻页按钮，便于在文章页中操作 */
+body.embedded-mode .slide-nav-btn {
+  display: inline-flex;
+}
+
+body.embedded-mode .ai-slide-frame {
+  border-radius: 10px;
+}
+
+@media (max-width: 900px){
+  .ai-transformation-root{padding:10px}
+  .ai-deck-shell{width:min(1100px,96vw);padding:10px}
+  .ai-deck-shell:fullscreen{padding:10px}
+  .ai-deck-topbar{font-size:.74rem;flex-wrap:wrap}
+  .ai-deck-shortcuts{display:none}
+  .slides-fullscreen-btn{margin-left:auto}
+  .ai-slide-inner{padding:16px}
+  .ai-slide-title{font-size:1.28rem;line-height:1.4;margin-bottom:8px}
+  .ai-slide-title-key{font-size:1.5rem}
+  .ai-slide-title-compact{font-size:1.35rem}
+  .ai-slide-subtitle{font-size:.9rem;line-height:1.55;margin-bottom:12px}
+  .ai-slide-bullets{font-size:.84rem;line-height:1.6;padding-left:1.05rem;max-width:100%}
+  .ai-slide-bullets li{margin:6px 0}
+  .ai-slide-footer{font-size:.66rem}
+  .ai-slide-progress-bar{width:88px}
+  .ai-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:35vh;overflow:auto}
+  .ai-slide-notes{position:static;max-width:none;margin:10px 0 0}
+}

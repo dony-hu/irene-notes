@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jerry的个人站</title>
+  <meta name="description" content="记录想法、项目和日常笔记" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <link rel="icon" type="image/svg+xml" href="./assets/mouse-favicon.svg" />
+  <link rel="stylesheet" href="./styles.css?v=202603210100-headerfinal" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <img class="header-banner" src="./assets/cat-mouse-banner.svg" alt="卡通风格猫追老鼠横幅插画（原创）" />
+      <div class="site-title-row">
+        <div>
+          <h1>Jerry的个人站</h1>
+          <p>写点东西，记录一些有意思的事。</p>
+        </div>
+        <div class="site-actions">
+          <button id="theme-toggle" class="btn btn-small theme-toggle-icon" type="button" aria-label="切换主题" title="切换主题">
+            <span class="theme-icon" aria-hidden="true">🌙</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-layout">
+    <section class="content-column">
+      <section id="posts" class="card">
+        <h2>最近更新</h2>
+        <ul id="post-list" class="post-list"></ul>
+      </section>
+
+      <section id="viewer" class="card hidden">
+        <div class="viewer-toolbar">
+          <div class="viewer-toolbar-left">
+            <button id="back-btn" class="btn">← 返回列表</button>
+          </div>
+
+        </div>
+        <article id="post-content" class="markdown-body"></article>
+      </section>
+
+      <section id="about" class="card">
+        <h2>关于我</h2>
+        <p>这是第一版个人站。先用最轻的方式跑起来，后续再迭代成支持后台发布、搜索和评论。</p>
+      </section>
+    </section>
+
+    <aside id="index-panel" class="index-panel">
+      <div class="index-panel-head">
+        <div class="filter-title">索引筛选</div>
+        <button id="filter-toggle" class="btn btn-small filter-toggle-btn" type="button" aria-expanded="true">收起</button>
+      </div>
+
+      <div class="index-panel-body" id="index-panel-body">
+        <button id="reset-filter" class="btn btn-small">重置筛选</button>
+
+        <h3>按主题标签</h3>
+        <div id="tag-filter" class="chips"></div>
+        <button id="tag-more" class="btn btn-small tag-more-btn hidden" type="button">展开更多标签</button>
+
+        <h3>按年月</h3>
+        <select id="month-filter" class="month-select" aria-label="按年月筛选"></select>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© <span id="year"></span> 我的个人站</div>
+  </footer>
+
+  <script src="./app.js?v=202603181145"></script>
+</body>
+</html>
