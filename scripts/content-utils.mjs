@@ -261,7 +261,6 @@ function toRecord(post) {
     slug: post.slug,
     date: post.date,
     tags: post.tags,
-    owner: post.owner || 'irene',
   };
 
   if (post.datetime) record.datetime = post.datetime;
@@ -304,7 +303,6 @@ export function collectPosts(rootDir) {
     const type = typeValue || undefined;
     const url = pickString(data.url) || (type === 'webslides' ? `./${slug}.html` : undefined);
     const summary = pickString(data.summary, firstSummary(content), fallbackSummary(title)) || undefined;
-    const owner = pickString(data.owner).toLowerCase() || 'irene';
     const fileErrors = [];
 
     if (!title) {
@@ -313,10 +311,6 @@ export function collectPosts(rootDir) {
 
     if (!date) {
       fileErrors.push(`${file}: missing date (add front matter date: YYYY-MM-DD)`);
-    }
-
-    if (!['jerry', 'irene'].includes(owner)) {
-      fileErrors.push(`${file}: invalid owner "${owner}" (use owner: jerry or owner: irene)`);
     }
 
     if (fileErrors.length) {
@@ -330,7 +324,6 @@ export function collectPosts(rootDir) {
       date,
       datetime,
       tags,
-      owner,
       type,
       url,
       summary,
