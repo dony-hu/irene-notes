@@ -206,7 +206,6 @@ const logoutBtn = document.getElementById('logout-btn');
 const userSessionEl = document.getElementById('user-session');
 const userAvatarEl = document.getElementById('user-avatar');
 const userNameEl = document.getElementById('user-name');
-const userTenantEl = document.getElementById('user-tenant');
 const authNoteEl = document.getElementById('auth-note');
 
 let currentPost = null;
@@ -718,9 +717,6 @@ function renderAuthState(authState = {}) {
 
   const user = authState.user || {};
   if (userNameEl) userNameEl.textContent = user.name || '飞书用户';
-  if (userTenantEl) {
-    userTenantEl.textContent = '已通过飞书登录';
-  }
 
   if (userAvatarEl) {
     if (user.avatarUrl) {
