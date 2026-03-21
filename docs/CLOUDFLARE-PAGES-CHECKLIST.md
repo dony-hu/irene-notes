@@ -1,6 +1,6 @@
 # Cloudflare Pages 极短操作单
 
-目标：保留当前 `jerry-notes.pages.dev` 这个 Direct Upload 项目，并让 GitHub 仓库 `dony-hu/jerry-notes` 在每次 push 到 `main` 后自动发布。
+目标：保留当前 `irene-notes.pages.dev` 这个 Direct Upload 项目，并让 GitHub 仓库 `dony-hu/irene-notes` 在每次 push 到 `main` 后自动发布。
 
 ## 1. 先确认项目类型
 
@@ -14,7 +14,7 @@
 这时最稳的方案不是重建项目，而是：
 
 - GitHub Actions 负责构建
-- Wrangler 把 `dist/` 自动上传到现有 `jerry-notes` 项目
+- Wrangler 把 `dist/` 自动上传到现有 `irene-notes` 项目
 
 仓库里的自动发布工作流在：
 
@@ -48,20 +48,21 @@ Secrets 配好后，任选其一：
 
 1. 直接向 `main` push 一次提交
 2. 到 GitHub Actions 手动运行 `Deploy Pages (Direct Upload)`
+2. 到 GitHub Actions 手动运行 `Deploy Irene Notes`
 
 工作流会执行：
 
 1. `npm install`
 2. `npm run build`
-3. `npx wrangler pages deploy dist --project-name=jerry-notes --branch=main`
+3. `npx wrangler pages deploy dist --project-name=irene-notes --branch=main`
 
 ## 5. 验证
 
 部署完成后检查：
 
-- `https://jerry-notes.pages.dev/posts/posts.json`
-- 页面里不应再出现 `2026-w12-weekly-report`
-- 页面里应包含 `juhe-api-catalog-full-md`
+- `https://irene-notes.pages.dev/posts/posts.json`
+- 页面标题应为 `Irene的个人站`
+- 最近文章列表应能看到 Irene 仓库里的最新内容
 
 ## 6. 当前已准备好
 
