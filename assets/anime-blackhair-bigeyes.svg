@@ -112,10 +112,4 @@
     <rect x="168" y="268" width="24" height="14" fill="#FFFFFF" rx="4"/>
   </g>
 
-  <!-- Site title text -->
-  <g transform="translate(70 160)">
-    <text x="0" y="50" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="58" font-weight="700" fill="#3A3A4A">Irene Notes</text>
-    <text x="2" y="102" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="26" fill="#5A5A6A">黑长直 · 日系大眼萌妹头像</text>
-    <text x="2" y="136" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="20" fill="#7A7A8A">A quiet space for daily thoughts.</text>
-  </g>
 </svg>
