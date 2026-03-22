@@ -43,7 +43,7 @@
   </g>
 
   <!-- Main character - black hair, big eyes, half body -->
-  <g transform="translate(800 10)">
+  <g transform="translate(920 10)">
     <!-- Big volume long black hair -->
     <path d="M260 110 C 210 60 140 50 70 80 C 0 110 -40 170 -20 240 C 0 310 45 370 90 405 C 135 440 190 455 250 445 C 310 435 355 390 385 335 C 415 280 420 220 395 170 C 370 120 320 160 260 110Z" fill="url(#blackHair)"/>
     <path d="M395 170 C 425 205 440 250 440 300 C 440 350 415 395 380 430 C 345 465 300 475 255 468" fill="url(#blackHair)"/>
