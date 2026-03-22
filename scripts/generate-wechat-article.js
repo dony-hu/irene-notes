@@ -1,6 +1,18 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
+const { pathToFileURL } = require('url');
+
+async function loadSiteConfig() {
+  try {
+    const configPath = path.resolve(__dirname, '..', 'site.config.mjs');
+    const configUrl = `${pathToFileURL(configPath).href}?t=${Date.now()}`;
+    const module = await import(configUrl);
+    return module.default || {};
+  } catch (_error) {
+    return {};
+  }
+}
 
 function parseArgs(argv) {
   const out = {};
@@ -133,7 +145,7 @@ function renderWechatMd(blocks, title, sourceName) {
   return lines.join('\n');
 }
 
-function main() {
+async function main() {
   const args = parseArgs(process.argv.slice(2));
   const source = args.source;
   if (!source) {
@@ -157,12 +169,17 @@ function main() {
   fs.mkdirSync(path.dirname(outHtml), { recursive: true });
   fs.mkdirSync(path.dirname(outMd), { recursive: true });
 
-  const html = renderWechatHtml(blocks, title, 'Jerry Notes');
-  const wechatMd = renderWechatMd(blocks, title, 'Jerry Notes');
+  const siteConfig = await loadSiteConfig();
+  const sourceName = siteConfig.siteTitle || siteConfig.footerText || 'Notes';
+  const html = renderWechatHtml(blocks, title, sourceName);
+  const wechatMd = renderWechatMd(blocks, title, sourceName);
   fs.writeFileSync(outHtml, html, 'utf8');
   fs.writeFileSync(outMd, wechatMd, 'utf8');
 
   console.log(JSON.stringify({ ok: true, source: abs, title, html: outHtml, md: outMd }, null, 2));
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

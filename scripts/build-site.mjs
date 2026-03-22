@@ -24,6 +24,10 @@ const ROOT_FILE_NAMES = new Set([
   'slides.css',
   'MachineryAgePage.jpg',
 ]);
+const ROOT_DIRECTORY_NAMES = new Set([
+  'assets',
+  'frontend',
+]);
 
 function shouldCopyRootFile(fileName) {
   return ROOT_FILE_NAMES.has(fileName);
@@ -34,7 +38,7 @@ function copyRootStaticFiles() {
 
   for (const entry of entries) {
     if (entry.isDirectory()) {
-      if (entry.name === 'assets') {
+      if (ROOT_DIRECTORY_NAMES.has(entry.name)) {
         fs.cpSync(path.join(rootDir, entry.name), path.join(distDir, entry.name), { recursive: true });
       }
       continue;

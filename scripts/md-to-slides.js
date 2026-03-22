@@ -1,6 +1,18 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
+const { pathToFileURL } = require('url');
+
+async function loadSiteConfig() {
+  try {
+    const configPath = path.resolve(__dirname, '..', 'site.config.mjs');
+    const configUrl = `${pathToFileURL(configPath).href}?t=${Date.now()}`;
+    const module = await import(configUrl);
+    return module.default || {};
+  } catch (_error) {
+    return {};
+  }
+}
 
 function escapeHtml(s = '') {
   return String(s)
@@ -94,7 +106,13 @@ function mapHref(href = '') {
   return href;
 }
 
-function buildHtml({ slides, deckTitle = 'Slides', outputCss = '/slides.css', homeHref = '/' }) {
+function buildHtml({
+  slides,
+  deckTitle = 'Slides',
+  outputCss = '/slides.css',
+  homeHref = '/',
+  siteTitle = 'Notes',
+}) {
   const dataJson = JSON.stringify(slides, null, 2)
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
@@ -103,13 +121,13 @@ function buildHtml({ slides, deckTitle = 'Slides', outputCss = '/slides.css', ho
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${escapeHtml(deckTitle)} | Jerry Notes</title>
+  <title>${escapeHtml(deckTitle)} | ${escapeHtml(siteTitle)}</title>
   <link rel="stylesheet" href="${outputCss}" />
 </head>
 <body class="ai-transformation-root">
   <div class="ai-deck-shell" id="deckShell">
     <div class="ai-deck-topbar">
-      <a href="${homeHref}" class="back">← 返回 Jerry Notes</a>
+      <a href="${homeHref}" class="back">← 返回 ${escapeHtml(siteTitle)}</a>
       <div class="ai-deck-logo">${escapeHtml(deckTitle)}</div>
       <div class="ai-deck-shortcuts">←/→ 翻页 · Space 下一页 · N 备注 · O 总览 · F 全屏</div>
       <button id="fullscreenBtn" class="slides-fullscreen-btn" type="button">⤢ 全屏</button>
@@ -295,7 +313,7 @@ function buildHtml({ slides, deckTitle = 'Slides', outputCss = '/slides.css', ho
 </html>`;
 }
 
-function main() {
+async function main() {
   const args = process.argv.slice(2);
   if (args.length < 2) {
     console.log('Usage: node scripts/md-to-slides.js <input.md> <output.html> [deckTitle]');
@@ -315,9 +333,19 @@ function main() {
   }));
 
   const deckTitle = deckTitleArg || (slides[0]?.title?.replace(/<[^>]+>/g, '') || 'Slides');
-  const html = buildHtml({ slides, deckTitle, outputCss: '/slides.css?v=202603150835', homeHref: '/' });
+  const siteConfig = await loadSiteConfig();
+  const html = buildHtml({
+    slides,
+    deckTitle,
+    outputCss: '/slides.css?v=202603150835',
+    homeHref: '/',
+    siteTitle: siteConfig.siteTitle || siteConfig.footerText || 'Notes',
+  });
   fs.writeFileSync(path.resolve(output), html, 'utf8');
   console.log(`Generated ${slides.length} slides => ${output}`);
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

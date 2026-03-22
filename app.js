@@ -1,4 +1,10 @@
 import siteConfig from './site.config.mjs';
+import { mdToHtml, stripFrontMatter } from './frontend/markdown.mjs';
+import {
+  renderFilters,
+  renderList,
+  selectedFilterCount,
+} from './frontend/posts-ui.mjs';
 
 let posts = [];
 let activeTag = null;
@@ -19,7 +25,8 @@ const exportPdfBtn = document.getElementById('export-pdf-btn');
 const sharePostBtn = document.getElementById('share-post-btn');
 const postBackFabBtn = document.getElementById('post-back-fab-btn');
 const postRefreshFabBtn = document.getElementById('post-refresh-fab-btn');
-const wechatBtn = document.getElementById('wechat-btn');const summaryBtn = document.getElementById('summary-btn');
+const wechatBtn = document.getElementById('wechat-btn');
+const summaryBtn = document.getElementById('summary-btn');
 const themeToggleBtn = document.getElementById('theme-toggle');
 const postsSection = document.getElementById('posts');
 const loginBtn = document.getElementById('login-btn');
@@ -44,14 +51,10 @@ function isMobileViewport() {
   return window.matchMedia('(max-width: 900px)').matches;
 }
 
-function selectedFilterCount() {
-  return Number(Boolean(activeTag)) + Number(Boolean(activeMonth));
-}
-
 function syncFilterPanelState() {
   if (!indexPanelEl || !filterToggleBtn) return;
 
-  const count = selectedFilterCount();
+  const count = selectedFilterCount(activeTag, activeMonth);
   const suffix = count > 0 ? `(${count})` : '';
 
   if (isMobileViewport()) {
@@ -68,349 +71,28 @@ function syncFilterPanelState() {
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
-function escapeHtml(s = '') {
-  return s
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-
-function toMonth(dateStr = '') {
-  return String(dateStr).slice(0, 7);
-}
-
-function getAllTags(list) {
-  const set = new Set();
-  list.forEach((p) => (p.tags || []).forEach((t) => set.add(t)));
-  return Array.from(set);
-}
-
-function getAllMonths(list) {
-  const set = new Set();
-  list.forEach((p) => {
-    const m = toMonth(p.date);
-    if (m) set.add(m);
-  });
-  return Array.from(set).sort((a, b) => (a < b ? 1 : -1));
-}
-
-function filterPosts() {
-  return posts.filter((p) => {
-    const hitTag = !activeTag || (p.tags || []).includes(activeTag);
-    const hitMonth = !activeMonth || toMonth(p.date) === activeMonth;
-    return hitTag && hitMonth;
+function renderPostList() {
+  renderList({
+    posts,
+    activeTag,
+    activeMonth,
+    postListEl,
+    isMobileViewport,
   });
 }
 
-function escapeAttr(s = '') {
-  return escapeHtml(s).replaceAll('\n', ' ').trim();
-}
-
-function formatPostDisplayDate(post) {
-  const raw = post.updatedAt || post.updated || post.datetime || post.date || '';
-  if (!raw) return '';
-  if (isMobileViewport()) {
-    const match = String(raw).match(/^(\d{4}-\d{2}-\d{2})/);
-    return match ? match[1] : raw;
-  }
-  return raw;
-}
-
-function renderList() {
-  const current = filterPosts();
-
-  if (!current.length) {
-    postListEl.innerHTML = `<li><div class="post-meta">当前筛选下暂无文章</div></li>`;
-    return;
-  }
-
-  postListEl.innerHTML = current
-    .map(
-      (p) => `
-    <li class="post-item">
-      <a class="post-card ${p.visibility === 'internal' ? 'is-internal' : 'is-public'}" href="#${p.slug}" data-slug="${p.slug}">
-        <div class="post-card-title-row">
-          <div class="post-title-inline">
-            <span class="post-link">${p.title}</span>
-            ${p.visibility === 'internal' ? `<span class="post-visibility is-internal post-visibility-inline">内部</span>` : ''}
-          </div>
-          <span class="post-date">${formatPostDisplayDate(p)}</span>
-        </div>
-        ${p.summary ? `<p class="post-summary">${escapeAttr(p.summary)}</p>` : ''}
-      </a>
-    </li>
-  `,
-    )
-    .join('');
-}
-
-function renderFilters() {
-  const tags = getAllTags(posts);
-  const months = getAllMonths(posts);
-  const visibleTags =
-    isMobileViewport() && !showAllMobileTags && !activeTag ? tags.slice(0, 6) : tags;
-
-  tagFilterEl.innerHTML = visibleTags
-    .map(
-      (tag) => `<button class="chip ${activeTag === tag ? 'active' : ''}" data-tag="${tag}">${tag}</button>`,
-    )
-    .join('');
-
-  if (tagMoreBtn) {
-    const shouldShow = isMobileViewport() && tags.length > 6 && !activeTag;
-    tagMoreBtn.classList.toggle('hidden', !shouldShow);
-    if (shouldShow) {
-      tagMoreBtn.textContent = showAllMobileTags ? '收起标签' : '展开更多标签';
-    }
-  }
-
-  monthFilterEl.innerHTML = [`<option value="">全部月份</option>`]
-    .concat(months.map((m) => `<option value="${m}" ${activeMonth === m ? 'selected' : ''}>${m}</option>`))
-    .join('');
-
-  syncFilterPanelState();
-}
-
-function parseInline(text = '') {
-  let out = escapeHtml(text);
-
-  out = out.replace(/!\[(.*?)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g, (_m, alt, src, title) => {
-    const safeSrc = String(src || '');
-    if (!safeSrc || /^javascript:/i.test(safeSrc)) return '';
-    const safeAlt = escapeHtml(alt || 'image');
-    const safeTitle = escapeHtml(title || '');
-    const caption = safeTitle || safeAlt;
-    return `<figure class="md-figure"><img class="md-image" loading="lazy" decoding="async" src="${safeSrc}" alt="${safeAlt}" ${safeTitle ? `title="${safeTitle}"` : ''} data-lightbox="1"/><figcaption>${caption}</figcaption></figure>`;
+function renderFilterPanel() {
+  renderFilters({
+    posts,
+    activeTag,
+    activeMonth,
+    showAllMobileTags,
+    tagFilterEl,
+    monthFilterEl,
+    tagMoreBtn,
+    isMobileViewport,
+    syncFilterPanelState,
   });
-
-  out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
-  out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  out = out.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  out = out.replace(/\[(.*?)\]\(([^\s)]+)\)/g, (_m, textValue, href) => {
-    const safeHref = String(href || '');
-    if (/^javascript:/i.test(safeHref)) return textValue;
-    const isExternal = /^https?:\/\//i.test(safeHref);
-    if (isExternal) {
-      return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${textValue}</a>`;
-    }
-    return `<a href="${safeHref}">${textValue}</a>`;
-  });
-  out = out.replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
-  return out;
-}
-
-function renderPdfEmbed(src = '', title = 'PDF 文档') {
-  const safeSrc = String(src || '');
-  const safeTitle = escapeHtml(title || 'PDF 文档');
-  if (!safeSrc || /^javascript:/i.test(safeSrc)) return '';
-  return `
-    <div class="pdf-embed-wrap">
-      <div class="pdf-embed-toolbar">
-        <a class="btn btn-small" href="${safeSrc}" target="_blank" rel="noopener noreferrer">新窗口打开 PDF</a>
-        <a class="btn btn-small" href="${safeSrc}" download>下载 PDF</a>
-      </div>
-      <iframe class="pdf-embed-iframe" src="${safeSrc}#view=FitH" title="${safeTitle}" loading="lazy"></iframe>
-    </div>
-  `;
-}
-
-function stripFrontMatter(mdRaw = '') {
-  const normalized = mdRaw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  const match = normalized.match(/^---\n[\s\S]*?\n---(?:\n|$)/);
-  return match ? normalized.slice(match[0].length) : normalized;
-}
-
-function mdToHtml(mdRaw = '') {
-  const md = stripFrontMatter(mdRaw);
-  const lines = md.split('\n');
-  const html = [];
-
-  let inCode = false;
-  let codeLang = '';
-  let codeLines = [];
-  let inUl = false;
-  let inOl = false;
-  let para = [];
-
-  const isTableSep = (line = '') => /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
-  const splitTableRow = (line = '') => {
-    let row = line.trim();
-    if (row.startsWith('|')) row = row.slice(1);
-    if (row.endsWith('|')) row = row.slice(0, -1);
-    return row.split('|').map((cell) => cell.trim());
-  };
-
-  const flushPara = () => {
-    if (para.length) {
-      html.push(`<p>${parseInline(para.join('<br/>'))}</p>`);
-      para = [];
-    }
-  };
-
-  const closeLists = () => {
-    if (inUl) {
-      html.push('</ul>');
-      inUl = false;
-    }
-    if (inOl) {
-      html.push('</ol>');
-      inOl = false;
-    }
-  };
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i];
-
-    if (line.trim().startsWith('```')) {
-      flushPara();
-      closeLists();
-      if (!inCode) {
-        inCode = true;
-        codeLang = line.trim().slice(3).trim().toLowerCase();
-        codeLines = [];
-      } else {
-        const codeValue = codeLines.join('\n');
-        if (codeLang === 'mermaid') {
-          html.push(
-            `<div class="mermaid-block"><div class="mermaid-diagram" data-mermaid-source="${escapeHtml(encodeURIComponent(codeValue))}"></div></div>`,
-          );
-        } else {
-          html.push(`<pre><code class="lang-${escapeHtml(codeLang)}">${escapeHtml(codeValue)}</code></pre>`);
-        }
-        inCode = false;
-        codeLang = '';
-        codeLines = [];
-      }
-      continue;
-    }
-
-    if (inCode) {
-      codeLines.push(line);
-      continue;
-    }
-
-    if (!line.trim()) {
-      flushPara();
-      closeLists();
-      continue;
-    }
-
-    if (/^\s*---+\s*$/.test(line)) {
-      flushPara();
-      closeLists();
-      html.push('<hr/>');
-      continue;
-    }
-
-    const imageOnly = line.match(/^!\[(.*?)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)\s*$/);
-    if (imageOnly) {
-      flushPara();
-      closeLists();
-      const alt = escapeHtml(imageOnly[1] || 'image');
-      const src = String(imageOnly[2] || '');
-      const title = escapeHtml(imageOnly[3] || '');
-      if (src && !/^javascript:/i.test(src)) {
-        const caption = title || alt;
-        html.push(`<figure class="md-figure"><img class="md-image" loading="lazy" decoding="async" src="${src}" alt="${alt}" ${title ? `title="${title}"` : ''} data-lightbox="1"/><figcaption>${caption}</figcaption></figure>`);
-      }
-      continue;
-    }
-
-    const pdfEmbed = line.match(/^\[pdf\]\(([^\s)]+)(?:\s+"([^"]*)")?\)\s*$/i);
-    if (pdfEmbed) {
-      flushPara();
-      closeLists();
-      html.push(renderPdfEmbed(pdfEmbed[1], pdfEmbed[2] || 'PDF 文档'));
-      continue;
-    }
-
-    const heading = line.match(/^(#{1,6})\s+(.*)$/);
-    if (heading) {
-      flushPara();
-      closeLists();
-      const level = heading[1].length;
-      html.push(`<h${level}>${parseInline(heading[2])}</h${level}>`);
-      continue;
-    }
-
-    if (line.includes('|') && i + 1 < lines.length && isTableSep(lines[i + 1])) {
-      flushPara();
-      closeLists();
-
-      const headers = splitTableRow(line);
-      html.push('<div class="table-wrap"><div class="table-scroll-hint">← 左右滑动查看完整表格</div><table class="md-table"><thead><tr>');
-      headers.forEach((header) => html.push(`<th>${parseInline(header)}</th>`));
-      html.push('</tr></thead><tbody>');
-
-      i += 2;
-      while (i < lines.length) {
-        const rowLine = lines[i];
-        if (!rowLine || !rowLine.includes('|') || /^\s*$/.test(rowLine)) {
-          i -= 1;
-          break;
-        }
-        const cols = splitTableRow(rowLine);
-        html.push('<tr>');
-        cols.forEach((cell) => html.push(`<td>${parseInline(cell)}</td>`));
-        html.push('</tr>');
-        i += 1;
-      }
-      html.push('</tbody></table></div>');
-      continue;
-    }
-
-    const quote = line.match(/^>\s?(.*)$/);
-    if (quote) {
-      flushPara();
-      closeLists();
-      html.push(`<blockquote><p>${parseInline(quote[1])}</p></blockquote>`);
-      continue;
-    }
-
-    const ul = line.match(/^[-*+]\s+(.*)$/);
-    if (ul) {
-      flushPara();
-      if (!inUl) {
-        closeLists();
-        inUl = true;
-        html.push('<ul>');
-      }
-      html.push(`<li>${parseInline(ul[1])}</li>`);
-      continue;
-    }
-
-    const ol = line.match(/^\d+\.\s+(.*)$/);
-    if (ol) {
-      flushPara();
-      if (!inOl) {
-        closeLists();
-        inOl = true;
-        html.push('<ol>');
-      }
-      html.push(`<li>${parseInline(ol[1])}</li>`);
-      continue;
-    }
-
-    para.push(line);
-  }
-
-  flushPara();
-  closeLists();
-
-  if (inCode) {
-    const codeValue = codeLines.join('\n');
-    if (codeLang === 'mermaid') {
-      html.push(
-        `<div class="mermaid-block"><div class="mermaid-diagram" data-mermaid-source="${escapeHtml(encodeURIComponent(codeValue))}"></div></div>`,
-      );
-    } else {
-      html.push(`<pre><code class="lang-${escapeHtml(codeLang)}">${escapeHtml(codeValue)}</code></pre>`);
-    }
-  }
-
-  return html.join('\n');
 }
 
 function getMermaidTheme() {
@@ -734,23 +416,23 @@ if (tagFilterEl) {
     const tag = el.dataset.tag;
     activeTag = activeTag === tag ? null : tag;
     if (activeTag) showAllMobileTags = true;
-    renderFilters();
-    renderList();
+    renderFilterPanel();
+    renderPostList();
   });
 }
 
 if (tagMoreBtn) {
   tagMoreBtn.addEventListener('click', () => {
     showAllMobileTags = !showAllMobileTags;
-    renderFilters();
+    renderFilterPanel();
   });
 }
 
 if (monthFilterEl) {
   monthFilterEl.addEventListener('change', () => {
     activeMonth = monthFilterEl.value || null;
-    renderFilters();
-    renderList();
+    renderFilterPanel();
+    renderPostList();
   });
 }
 
@@ -759,8 +441,8 @@ if (resetFilterBtn) {
     activeTag = null;
     activeMonth = null;
     showAllMobileTags = false;
-    renderFilters();
-    renderList();
+    renderFilterPanel();
+    renderPostList();
   });
 }
 
@@ -780,7 +462,7 @@ window.addEventListener('resize', () => {
     isMobileFilterOpen = false;
   }
   syncFilterPanelState();
-  renderFilters();
+  renderFilterPanel();
 });
 
 window.addEventListener('popstate', async () => {
@@ -989,8 +671,8 @@ async function bootstrap() {
 
   initTheme();
   await loadAuthState();
-  renderFilters();
-  renderList();
+  renderFilterPanel();
+  renderPostList();
 
   if (location.hash) {
     await openPost(location.hash.replace('#', ''), { skipHistory: true });
