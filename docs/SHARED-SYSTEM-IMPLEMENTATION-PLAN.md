@@ -147,7 +147,7 @@
 
 ## 四、本轮实施范围
 
-当前迭代已完成阶段 A，并推进阶段 B 的首页壳层收敛。
+当前迭代已完成阶段 A，推进了阶段 B 的首页壳层收敛，并完成了阶段 C 的 slide 路由统一。
 
 具体动作：
 
@@ -160,14 +160,14 @@
 7. 修改两个仓库的 `scripts/build-site.mjs`
 8. 把登录区 UI 调整并入共享壳层收敛
 9. 把索引筛选区结构向统一模板靠拢
-10. 分别构建验证
+10. 把 Irene 的 webslides 路由切到 `/slides/<slug>.html`
+11. 分别构建验证
 
 本轮明确不做：
 
 - 不统一 `app.js` 的全部行为
 - 不统一 `styles.css` 的全部样式
-- 不改 slide 路由
-- 不改同步脚本策略
+- 不把 `app.js` / `styles.css` / `scripts/content-utils.mjs` / `scripts/md-to-slides.js` 纳入自动同步
 
 ## 五、当前进展快照（2026-03-22）
 
@@ -178,12 +178,14 @@
 3. Jerry 已吸收 Irene 这轮登录区和筛选面板 UI 改造
 4. 两个仓库都已重新 `npm run build` 成功
 5. `index.html` diff 已明显缩小，当前主要剩品牌字段和少量站点文案差异
+6. Irene 的 webslides 已统一改到 `/slides/<slug>.html`
+7. `functions/_lib/post-access.js`、`functions/[slug].js`、`functions/slides/*` 已重新纳入自动同步范围
 
 仍未完成：
 
 1. `styles.css` 还没有收敛到可自动同步
 2. `app.js` 还保留各自的前端行为差异
-3. slide 路由仍是两个系统的主要结构差异
+3. `scripts/content-utils.mjs` 和 `scripts/md-to-slides.js` 仍保留站点差异
 4. `sync-system-from-jerry --dry-run` 仍会把前端主文件列为 manual review
 
 ## 六、风险与回滚
@@ -197,7 +199,7 @@
 回滚方式：
 
 - 单独回滚 `site.config.mjs` / `site-shell.mjs` 接线提交
-- 因为本轮不动数据和路由，回滚成本较低
+- 因为本轮没有改动内容正文，回滚成本仍然可控
 
 ## 七、完成标志
 

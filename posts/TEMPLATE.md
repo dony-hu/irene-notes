@@ -8,7 +8,7 @@ tags:
 # visibility: internal
 # type 省略时默认按普通文章处理；需要幻灯片时改成 webslides
 # type: webslides
-# url 省略时，webslides 默认生成 ./<slug>.html
+# url 省略时，webslides 默认生成 ./slides/<slug>.html
 # draft: true
 ---
 

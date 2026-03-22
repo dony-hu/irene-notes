@@ -58,7 +58,7 @@
 说明：
 
 - `slug` 由文件名决定
-- `type` 缺省表示普通文章，`webslides` 表示构建时额外生成 `<slug>.html`
+- `type` 缺省表示普通文章，`webslides` 表示构建时额外生成 `slides/<slug>.html`
 - `draft: true` 的内容不进入线上产物
 
 ### 4.2 构建能力

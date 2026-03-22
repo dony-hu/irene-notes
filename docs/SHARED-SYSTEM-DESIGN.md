@@ -130,7 +130,7 @@ Jerry 当前 webslides 约定：
 - 列表 URL：`./slides/<slug>.html`
 - 服务端资源路径：`/slides/<slug>.html`
 
-Irene 当前 webslides 约定：
+Irene 改造前的 webslides 约定：
 
 - 列表 URL：`./<slug>.html`
 - 根路径函数：`/<slug>`
