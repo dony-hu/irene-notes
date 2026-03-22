@@ -1,0 +1,118 @@
+<svg width="1600" height="480" viewBox="0 0 1600 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="softBg" x1="0" y1="0" x2="1600" y2="480" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0F8FF"/>
+      <stop offset="0.5" stop-color="#F5E8FF"/>
+      <stop offset="1" stop-color="#FFEDF6"/>
+    </linearGradient>
+    <linearGradient id="hairGradient" x1="850" y1="20" x2="1400" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6B5B95"/>
+      <stop offset="1" stop-color="#4A3F70"/>
+    </linearGradient>
+    <linearGradient id="hairGlow" x1="850" y1="20" x2="1400" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8A7BB5" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#6B5B95" stop-opacity="0.85"/>
+    </linearGradient>
+    <linearGradient id="blouseGradient" x1="900" y1="280" x2="1350" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFEFF4"/>
+      <stop offset="1" stop-color="#FFD6E3"/>
+    </linearGradient>
+    <filter id="glowSoft" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="480" fill="url(#softBg)"/>
+
+  <!-- Bokeh circles -->
+  <g opacity="0.4" filter="glowSoft">
+    <circle cx="180" cy="120" r="40" fill="#FFFFFF"/>
+    <circle cx="280" cy="80" r="28" fill="#FFE6F2"/>
+    <circle cx="1400" cy="100" r="50" fill="#E6F0FF"/>
+    <circle cx="1500" cy="180" r="35" fill="#F0E6FF"/>
+    <circle cx="120" cy="400" r="45" fill="#FFF0F8"/>
+  </g>
+
+  <!-- Floating petals -->
+  <g opacity="0.6">
+    <ellipse cx="160" cy="200" rx="10" ry="5" fill="#FFC8DD" transform="rotate(-15 160 200)"/>
+    <ellipse cx="240" cy="140" rx="8" ry="4" fill="#FFD6E0" transform="rotate(25 240 140)"/>
+    <ellipse cx="1440" cy="220" rx="9" ry="4.5" fill="#FFC8DD" transform="rotate(35 1440 220)"/>
+  </g>
+
+  <!-- Main character - big half-body, occupies main space -->
+  <g transform="translate(820 20)">
+    <!-- Long flowing hair - big volume -->
+    <path d="M250 120 C 200 80 130 70 70 100 C 10 130 -20 190 -10 260 C 0 330 40 380 80 410 C 120 440 170 450 230 440 C 290 430 330 390 360 340 C 390 290 400 230 380 180 C 360 130 310 160 250 120Z" fill="url(#hairGradient)"/>
+    <path d="M380 180 C 410 210 430 260 430 310 C 430 360 410 400 380 430 C 350 460 310 470 270 465" fill="url(#hairGradient)"/>
+    <path d="M60 110 C 30 140 10 180 0 220" stroke="url(#hairGlow)" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <path d="M320 150 C 340 180 355 220 360 260" stroke="url(#hairGlow)" stroke-width="14" stroke-linecap="round" fill="none"/>
+    <path d="M180 85 C 140 95 100 120 75 155" stroke="url(#hairGlow)" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <path d="M280 400 C 310 410 335 425 345 445" stroke="url(#hairGlow)" stroke-width="10" stroke-linecap="round" fill="none"/>
+
+    <!-- Hair flowing over shoulder -->
+    <path d="M80 200 C 50 240 40 290 50 340 C 60 390 80 420 80 420" fill="url(#hairGradient)"/>
+
+    <!-- Face -->
+    <ellipse cx="180" cx="180" cy="180" rx="85" ry="95" fill="#FFFAF8"/>
+    
+    <!-- BIG EYES - key requirement -->
+    <ellipse cx="140" cy="170" rx="20" ry="28" fill="#2B2B47"/>
+    <ellipse cx="220" cy="175" rx="20" ry="28" fill="#2B2B47"/>
+    <!-- Eye highlights -->
+    <circle cx="135" cy="160" r="8" fill="#FFFFFF"/>
+    <circle cx="215" cy="165" r="8" fill="#FFFFFF"/>
+    <circle cx="142" cy="175" r="4" fill="#FFFFFF"/>
+    <circle cx="222" cy="180" r="4" fill="#FFFFFF"/>
+    
+    <!-- LONG EYELASHES -->
+    <g stroke="#2B2B47" stroke-width="2.5" stroke-linecap="round">
+      <!-- Left eye lashes -->
+      <path d="M114 152 L 108 145"/>
+      <path d="M120 144 L 114 136"/>
+      <path d="M128 140 L 122 132"/>
+      <path d="M140 140 L 140 132"/>
+      <path d="M152 144 L 156 136"/>
+      <path d="M158 152 L 164 145"/>
+      <!-- Right eye lashes -->
+      <path d="M194 157 L 188 150"/>
+      <path d="M200 149 L 194 141"/>
+      <path d="M208 145 L 202 137"/>
+      <path d="M220 145 L 220 137"/>
+      <path d="M232 149 L 236 141"/>
+      <path d="M238 157 L 244 150"/>
+    </g>
+    
+    <!-- Eyebrows -->
+    <path d="M115 138 Q 130 126 148 132" stroke="#7A6B8B" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M192 140 Q 210 128 228 136" stroke="#7A6B8B" stroke-width="3" stroke-linecap="round" fill="none"/>
+    
+    <!-- Soft blush -->
+    <ellipse cx="110" cy="200" rx="18" ry="10" fill="#FFC2CF" opacity="0.7"/>
+    <ellipse cx="250" cy="205" rx="18" ry="10" fill="#FFC2CF" opacity="0.7"/>
+    
+    <!-- Small cute nose -->
+    <path d="M178 185 L 182 185 L 180 195" stroke="#E8CBD2" stroke-width="2" stroke-linecap="round" fill="none"/>
+    
+    <!-- Gentle small smile -->
+    <path d="M168 210 Q 180 218 192 210" stroke="#CC8899" stroke-width="3" stroke-linecap="round" fill="none"/>
+    
+    <!-- Bangs -->
+    <path d="M110 110 C 130 85 155 72 180 70 C 205 72 230 85 250 110 C 230 90 210 78 180 75 C 150 78 130 90 110 110Z" fill="url(#hairGradient)"/>
+
+    <!-- Upper body blouse - half body as requested -->
+    <path d="M50 260 C 90 230 270 230 310 260 C 340 280 360 380 360 450 C 360 460 0 460 0 450 C 0 380 20 280 50 260Z" fill="url(#blouseGradient)"/>
+    
+    <!-- Small ribbon -->
+    <ellipse cx="180" cy="280" rx="25" cy="18" fill="#FFB3D1"/>
+    <rect x="172" cy="274" width="16" height="12" fill="#FFFFFF" rx="3"/>
+  </g>
+
+  <!-- Title text - on left -->
+  <g transform="translate(80 160)">
+    <text x="0" y="50" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="58" font-weight="700" fill="#5A4A85">Irene Notes</text>
+    <text x="2" y="102" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="26" fill="#7E6BAF">大眼睛长睫毛 · 长发飘飘日系少女</text>
+    <text x="2" y="136" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="20" fill="#9B8CC6">Welcome to my little world of thoughts.</text>
+  </g>
+</svg>
