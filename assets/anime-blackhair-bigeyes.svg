@@ -5,13 +5,13 @@
       <stop offset="0.5" stop-color="#F0E6FF"/>
       <stop offset="1" stop-color="#FFE6F2"/>
     </linearGradient>
-    <linearGradient id="blackHair" x1="800" y1="10" x2="1400" y2="470" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#3C3C43"/>
-      <stop offset="1" stop-color="#1D1D22"/>
+    <linearGradient id="redHair" x1="800" y1="10" x2="1400" y2="470" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D93A44"/>
+      <stop offset="1" stop-color="#A8222A"/>
     </linearGradient>
-    <linearGradient id="blackHairHighlight" x1="800" y1="10" x2="1400" y2="470" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#5A5A66" stop-opacity="0.8"/>
-      <stop offset="1" stop-color="#3C3C44" stop-opacity="0.8"/>
+    <linearGradient id="redHairHighlight" x1="800" y1="10" x2="1400" y2="470" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E85A60" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#D93A44" stop-opacity="0.8"/>
     </linearGradient>
     <linearGradient id="schoolBlouse" x1="850" y1="280" x2="1350" y2="470" gradientUnits="userSpaceOnUse">
       <stop stop-color="#FFFFFF"/>
@@ -44,16 +44,16 @@
 
   <!-- Main character - black hair, big eyes, half body -->
   <g transform="translate(920 10)">
-    <!-- Big volume long black hair -->
-    <path d="M260 110 C 210 60 140 50 70 80 C 0 110 -40 170 -20 240 C 0 310 45 370 90 405 C 135 440 190 455 250 445 C 310 435 355 390 385 335 C 415 280 420 220 395 170 C 370 120 320 160 260 110Z" fill="url(#blackHair)"/>
-    <path d="M395 170 C 425 205 440 250 440 300 C 440 350 415 395 380 430 C 345 465 300 475 255 468" fill="url(#blackHair)"/>
+    <!-- Big volume long red hair -->
+    <path d="M260 110 C 210 60 140 50 70 80 C 0 110 -40 170 -20 240 C 0 310 45 370 90 405 C 135 440 190 455 250 445 C 310 435 355 390 385 335 C 415 280 420 220 395 170 C 370 120 320 160 260 110Z" fill="url(#redHair)"/>
+    <path d="M395 170 C 425 205 440 250 440 300 C 440 350 415 395 380 430 C 345 465 300 475 255 468" fill="url(#redHair)"/>
     <!-- Hair highlights for shine -->
-    <path d="M60 90 C 25 120 0 160 -10 200" stroke="url(#blackHairHighlight)" stroke-width="18" stroke-linecap="round" fill="none"/>
-    <path d="M330 130 C 355 160 370 200 375 240" stroke="url(#blackHairHighlight)" stroke-width="16" stroke-linecap="round" fill="none"/>
-    <path d="M160 60 C 120 70 85 95 55 130" stroke="url(#blackHairHighlight)" stroke-width="14" stroke-linecap="round" fill="none"/>
-    <path d="M280 420 C 310 435 335 450 350 465" stroke="url(#blackHairHighlight)" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <path d="M60 90 C 25 120 0 160 -10 200" stroke="url(#redHairHighlight)" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <path d="M330 130 C 355 160 370 200 375 240" stroke="url(#redHairHighlight)" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <path d="M160 60 C 120 70 85 95 55 130" stroke="url(#redHairHighlight)" stroke-width="14" stroke-linecap="round" fill="none"/>
+    <path d="M280 420 C 310 435 335 450 350 465" stroke="url(#redHairHighlight)" stroke-width="12" stroke-linecap="round" fill="none"/>
     <!-- Hair falling forward -->
-    <path d="M70 180 C 40 220 30 270 40 320 C 50 370 70 400 70 400" fill="url(#blackHair)"/>
+    <path d="M70 180 C 40 220 30 270 40 320 C 50 370 70 400 70 400" fill="url(#redHair)"/>
 
     <!-- Face -->
     <ellipse cx="180" cy="170" rx="88" ry="98" fill="#FFFAF5"/>
@@ -88,8 +88,8 @@
     </g>
     
     <!-- Eyebrows -->
-    <path d="M108 128 Q 126 114 146 122" stroke="#4A4A5A" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-    <path d="M204 129 Q 222 115 242 123" stroke="#4A4A5A" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <path d="M108 128 Q 126 114 146 122" stroke="#7A2A2A" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <path d="M204 129 Q 222 115 242 123" stroke="#7A2A2A" stroke-width="3.5" stroke-linecap="round" fill="none"/>
     
     <!-- Soft pink blush -->
     <ellipse cx="105" cy="198" rx="20" ry="11" fill="#FFB8C8" opacity="0.65"/>
@@ -102,7 +102,7 @@
     <path d="M162 212 Q 180 222 198 212" stroke="#BB7788" stroke-width="3" stroke-linecap="round" fill="none"/>
     
     <!-- Bangs -->
-    <path d="M105 100 C 128 75 155 62 180 60 C 205 62 232 75 255 100 C 235 78 210 65 180 62 C 150 65 125 78 105 100Z" fill="url(#blackHair)"/>
+    <path d="M105 100 C 128 75 155 62 180 60 C 205 62 232 75 255 100 C 235 78 210 65 180 62 C 150 65 125 78 105 100Z" fill="url(#redHair)"/>
 
     <!-- Upper body / bust shot - white school blouse -->
     <path d="M40 255 C 85 220 275 220 320 255 C 355 280 370 375 370 460 C 370 470 0 470 0 460 C 0 375 15 280 40 255Z" fill="url(#schoolBlouse)"/>
