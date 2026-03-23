@@ -1,5 +1,19 @@
 [
   {
+    "title": "AI重构空间智能，丰图开启新赛道 - 给销售团队的AI洗脑分享",
+    "slug": "ai-sales-training",
+    "date": "2026-03-23",
+    "tags": [
+      "AI",
+      "销售",
+      "分享"
+    ],
+    "visibility": "internal",
+    "type": "webslides",
+    "url": "./ai-sales-training.html",
+    "summary": "✅ 数据生产：传统方式几个月，我们AI几周搞定"
+  },
+  {
     "title": "丰图AI产品矩阵2026年Q1更新简报（测试发布）",
     "slug": "2026-03-21_丰图AI产品矩阵Q1更新简报_测试发布",
     "date": "2026-03-21",
