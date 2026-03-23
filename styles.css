@@ -103,17 +103,17 @@ body {
 .container { width: min(1100px, 94vw); max-width: 100%; margin: 0 auto; }
 .site-header {
   border-bottom: 1px solid var(--border);
-  padding: 22px 0 20px;
+  padding: 14px 0 12px;
   background: var(--header-bg);
 }
 
 .header-banner {
   width: 100%;
-  max-height: 170px;
+  max-height: 160px;
   object-fit: cover;
   border: 1px solid var(--border);
   border-radius: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .site-title-row {
@@ -155,11 +155,12 @@ body {
 }
 
 .auth-note {
-  max-width: 360px;
+  max-width: 280px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   text-align: right;
-  line-height: 1.5;
+  line-height: 1.4;
+  margin-top: 4px;
 }
 
 .btn-feishu {
