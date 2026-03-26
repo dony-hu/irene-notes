@@ -20,4 +20,4 @@ OpenAI Operator、智谱AutoGLM相继发布，AI已经从"对话"走向"自主�
 
 这是丰图从"GIS项目服务商"升级为"空间智能决策平台"的战略抓手，必须快速落地抢占市场。接下来2个月，我会每周跟进研发和客户验证进展，推动这个战略机会落地。
 
-![小图CLAW 行业Deep-dive](../../public/content/小图CLAW-deepdive.png)
+![小图CLAW 行业Deep-dive](../assets/小图CLAW-deepdive.png)
