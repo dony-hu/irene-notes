@@ -1,5 +1,17 @@
 [
   {
+    "title": "行业Deep-dive · 小图CLAW——抓住空间智能体的3-6个月窗口期",
+    "slug": "week-deepdive-xiaotu-claw",
+    "date": "2026-03-26",
+    "tags": [
+      "行业研究",
+      "产品",
+      "小图CLAW"
+    ],
+    "visibility": "internal",
+    "summary": "OpenAI Operator、智谱AutoGLM相继发布，AI已经从\"对话\"走向\"自主操作\"，空间智能作为AI理解物理世界的核心入口，成为巨头必争之地。"
+  },
+  {
     "title": "你好，小站",
     "slug": "hello-site",
     "date": "2026-03-26",
