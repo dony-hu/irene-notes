@@ -13,6 +13,17 @@
   },
   {
     "title": "你好，小站",
+    "slug": "hello-site-test",
+    "date": "2026-03-26",
+    "tags": [
+      "测试",
+      "技能验证"
+    ],
+    "visibility": "public",
+    "summary": "这是一篇由 AI 自动生成的测试文章，用来验证 site publish post 技能是否工作正常。"
+  },
+  {
+    "title": "你好，小站",
     "slug": "hello-site",
     "date": "2026-03-26",
     "tags": [
