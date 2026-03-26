@@ -1,4 +1,4 @@
-# Irene Notes
+# Jerry Notes
 
 一个基于 Markdown 的轻量静态个人站。
 
@@ -97,19 +97,28 @@ visibility: public
 - `tags` 可选
 - `visibility` 可选；默认 `public`
 - `visibility: internal` 的文章只对已登录飞书用户开放
-- `type: webslides` 时，构建会自动生成 `./<slug>.html`
+- `type: webslides` 时，构建会自动生成 `./slides/<slug>.html`
 - `draft: true` 的文章不会进入站点产物
 - 没有 front matter 的 Markdown 不会自动发布
+- 如果标题或 slug 明显属于工作计划、日志、纪要、学习手册、周报、客户交流方案等内部材料，而仍标成 `public`，构建会直接失败
+
+内容建议这样区分：
+
+- `public`
+  - 适合外部公开传播的观点、方法论、泛化后的行业文章
+- `internal`
+  - 工作计划、周报、会议纪要、部门学习手册、项目状态盘点、包含内部员工姓名或组织细节的分享材料
+  - 客户交流方案、部门内部宣讲稿、项目交付盘点、团队日志与代码分析等工作材料
 
 ## Cloudflare Pages 部署
 
-当前 `irene-notes.pages.dev` 项目使用的是 `Direct Upload` 类型，不是 Git 集成。
+当前 `jerry-notes.pages.dev` 项目已经确认是 `Direct Upload` 类型，不是 Git 集成。
 
 因此这里采用的自动发布方案是：
 
 - GitHub 负责托管源码
 - GitHub Actions 在 `push main` 后执行 `npm run build`
-- Wrangler 把 `dist/` 直接上传到 Cloudflare Pages 项目 `irene-notes`
+- Wrangler 把 `dist/` 直接上传到现有的 Cloudflare Pages 项目 `jerry-notes`
 
 对应工作流文件：
 
@@ -140,7 +149,7 @@ visibility: public
 飞书应用侧需要完成两项配置：
 
 1. 在 **安全设置** 中加入回调地址：
-   `https://irene-notes.pages.dev/api/auth/feishu/callback`
+   `https://jerry-notes.pages.dev/api/auth/feishu/callback`
 2. 如果你在 `FEISHU_SCOPE` 中声明了额外 scope，需要先在飞书开放平台里为应用申请对应权限
 
 ## 内外部访问控制
@@ -154,9 +163,16 @@ visibility: public
 - 服务端会拦截：
   - `posts/posts.json`
   - `posts/*.md`
-  - `type: webslides` 生成的 `/<slug>.html`
+  - `slides/*.html`
+- 其中 `posts/*.md` 与 `slides/*.html` 使用目录级 `_middleware` 先于静态资源执行，避免被直链绕过
 
 这意味着内部文章不仅在前端列表里隐藏，也不能通过直链绕过查看。
+
+另外，构建阶段还会做一次“疑似内部内容”审计：
+
+- 如果文章标题或文件名明显像计划、日志、纪要、手册、周报、客户方案等工作材料
+- 但 front matter 仍是 `public`
+- `npm run build` 会失败，避免误发布
 
 ## 当前约束
 

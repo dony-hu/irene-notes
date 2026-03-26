@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>宝安城市运营中心智能体平台汇报</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg2: #0b1f37;
+      --panel: rgba(12, 28, 52, 0.86);
+      --panel2: rgba(14, 39, 74, 0.76);
+      --line: rgba(111, 196, 255, 0.25);
+      --text: #ecf5ff;
+      --muted: #a7bfd8;
+      --accent: #59d0ff;
+      --accent2: #6dffcd;
+      --warn: #ffcf5a;
+      --danger: #ff7c7c;
+      --shadow: 0 24px 80px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(79, 177, 255, .18), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(33, 255, 189, .10), transparent 22%),
+        linear-gradient(180deg, #07111f 0%, #08192c 60%, #081521 100%);
+      color: var(--text);
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow: hidden;
+    }
+    .deck {
+      width: 100%; height: 100%; position: relative;
+    }
+    .slide {
+      position: absolute; inset: 0;
+      padding: 56px 68px 70px;
+      display: none;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.02), rgba(255,255,255,0) 30%),
+        radial-gradient(circle at right bottom, rgba(89,208,255,.08), transparent 30%);
+    }
+    .slide.active { display: flex; flex-direction: column; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--muted); font-size: 14px; letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .title {
+      font-size: 42px; line-height: 1.18; font-weight: 800; letter-spacing: -0.02em;
+      margin: 0 0 14px 0;
+      max-width: 1200px;
+    }
+    .subtitle {
+      font-size: 20px; line-height: 1.7; color: var(--muted); margin: 0 0 26px;
+      max-width: 1180px;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1.08fr .92fr; gap: 24px; flex: 1; min-height: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px 26px;
+      backdrop-filter: blur(14px);
+    }
+    .panel.soft { background: var(--panel2); }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(109,255,205,.28);
+      padding: 8px 14px; border-radius: 999px;
+      color: var(--accent2); font-size: 13px; margin-bottom: 18px;
+      background: rgba(109,255,205,.08);
+    }
+    h2, h3, h4 { margin: 0 0 14px; }
+    h3 { font-size: 26px; }
+    h4 { font-size: 18px; color: var(--accent); }
+    p { margin: 0 0 12px; line-height: 1.72; color: var(--text); }
+    ul { margin: 0; padding-left: 22px; }
+    li { margin: 10px 0; line-height: 1.65; color: var(--text); }
+    .muted { color: var(--muted); }
+    .big-number { font-size: 72px; font-weight: 800; color: var(--accent2); line-height: 1; }
+    .metric { display: flex; flex-direction: column; gap: 10px; }
+    .tag { display:inline-block; padding: 6px 10px; border-radius: 999px; font-size: 12px; color: var(--accent); background: rgba(89,208,255,.08); border: 1px solid rgba(89,208,255,.18); }
+    .footer {
+      margin-top: 18px; display:flex; justify-content:space-between; align-items:center; color: var(--muted); font-size: 13px;
+    }
+    .page { letter-spacing: .08em; }
+    .timeline { display: grid; gap: 14px; }
+    .step {
+      display: grid; grid-template-columns: 58px 1fr; gap: 14px; align-items: start;
+      padding: 14px 0; border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .step:first-child { border-top: none; padding-top: 0; }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 14px; display:flex; align-items:center; justify-content:center;
+      background: rgba(89,208,255,.12); border:1px solid rgba(89,208,255,.25); color:var(--accent); font-weight:700;
+    }
+    .flow {
+      display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px;
+    }
+    .flow span {
+      padding: 10px 14px; border-radius: 14px; background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); color: var(--text); font-size: 14px;
+    }
+    .hero {
+      display:grid; grid-template-columns: 1.18fr .82fr; gap: 28px; flex: 1; align-items: stretch;
+    }
+    .hero-visual {
+      position: relative; overflow: hidden; border-radius: 28px; border:1px solid var(--line); background:
+      linear-gradient(180deg, rgba(89,208,255,.14), rgba(89,208,255,.03)),
+      linear-gradient(135deg, rgba(17,50,96,.95), rgba(10,24,45,.92));
+      box-shadow: var(--shadow);
+      min-height: 520px;
+    }
+    .hero-visual::before {
+      content:""; position:absolute; inset: 24px; border-radius: 22px; border:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(circle at 20% 30%, rgba(90, 208, 255, .15), transparent 26%),
+        radial-gradient(circle at 70% 40%, rgba(109,255,205,.10), transparent 20%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    }
+    .hero-map, .hero-chat, .hero-video, .hero-panel {
+      position:absolute; border-radius:18px; border:1px solid rgba(255,255,255,.1); background: rgba(4, 13, 26, .72); backdrop-filter: blur(10px);
+      box-shadow: 0 14px 40px rgba(0,0,0,.22);
+    }
+    .hero-map { left: 44px; top: 42px; width: 58%; height: 58%; }
+    .hero-panel { right: 44px; top: 42px; width: 28%; height: 28%; }
+    .hero-video { right: 44px; bottom: 42px; width: 42%; height: 38%; }
+    .hero-chat { left: 44px; bottom: 42px; width: 48%; height: 26%; }
+    .mock-title { color: var(--accent2); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; padding: 12px 14px; border-bottom:1px solid rgba(255,255,255,.08); }
+    .mock-body { padding: 14px; font-size: 14px; line-height: 1.6; color: var(--muted); }
+    .cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+    .card {
+      padding: 18px; border-radius: 20px; background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+    }
+    .card h4 { margin-bottom: 10px; }
+    .quote {
+      padding: 24px 26px; font-size: 28px; line-height: 1.55; color: var(--text);
+      border-left: 4px solid var(--accent2); background: rgba(109,255,205,.06); border-radius: 18px;
+    }
+    .matrix {
+      display:grid; grid-template-columns: 180px repeat(3, 1fr); gap: 10px; font-size: 14px;
+    }
+    .matrix div {
+      padding: 14px 12px; border-radius: 14px; border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04); line-height: 1.55;
+    }
+    .matrix .head { color: var(--accent2); font-weight: 700; background: rgba(109,255,205,.08); }
+    .pill-list { display:flex; flex-wrap:wrap; gap: 10px; }
+    .pill { padding: 10px 14px; border-radius: 999px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); color: var(--text); font-size: 14px; }
+    .cover-note { font-size: 18px; line-height:1.8; color: var(--muted); max-width: 640px; }
+    .nav-help {
+      position: fixed; right: 20px; bottom: 16px; z-index: 20; color: var(--muted); font-size: 12px; opacity: .9;
+      background: rgba(6,18,31,.6); padding: 8px 12px; border-radius: 999px; border:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(8px);
+    }
+    @media (max-width: 1100px) {
+      .slide { padding: 32px 28px 42px; overflow: auto; }
+      .hero, .grid-2, .grid-3, .grid-4, .matrix { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 380px; }
+      .title { font-size: 32px; }
+      .subtitle { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck"></div>
+  <div class="nav-help">← → 切换　空格/点击下一页　F 全屏</div>
+  <script>
+    const slides = [
+      {
+        section: '封面',
+        title: '宝安城市运营中心智能体平台\n汇报方案（Web Slides）',
+        subtitle: '面向城市运营中心管控大厅，构建“自然语言驱动的大屏交互 + 时空智能分析 + 视频联动 + 事件研判 + 后台治理”的智能体平台。',
+        layout: 'cover',
+        content: `
+          <div class="hero">
+            <div>
+              <div class="kicker">客户汇报版 · 约 30 页</div>
+              <div class="quote">目标不是做一个聊天机器人，而是做一套可控、可审计、可演进的城市运营中心智能交互与决策辅助平台。</div>
+              <div style="height:20px"></div>
+              <p class="cover-note">本方案综合前期讨论的系统架构、原型资源、知识工程、SOP 结构化、领导偏好建模与演示故事线，形成一套适合客户汇报的完整方案稿。</p>
+              <div class="flow" style="margin-top:22px"><span>自然语言交互</span><span>地图/CIM 联动</span><span>视频调阅</span><span>事件研判</span><span>知识工程</span><span>后台治理</span></div>
+            </div>
+            <div class="hero-visual">
+              <div class="hero-map"><div class="mock-title">CIM / 地图</div><div class="mock-body">区域定位、图层控制、态势热区、空间分析、对象高亮、相机飞行</div></div>
+              <div class="hero-panel"><div class="mock-title">态势卡片</div><div class="mock-body">积水点 24 处<br>超警戒 6 处<br>重点区域：福永 / 西乡</div></div>
+              <div class="hero-video"><div class="mock-title">视频联动</div><div class="mock-body">周边视频推荐、高点优先、4 路上墙、巡逻轮播、异常回退</div></div>
+              <div class="hero-chat"><div class="mock-title">对话入口</div><div class="mock-body">“看一下福永地铁站出口的积水情况，并打开周边高点监控，给我一个 1 分钟汇报口径。”</div></div>
+            </div>
+          </div>`
+      },
+      {
+        section: '目录',
+        title: '汇报目录',
+        subtitle: '本次汇报围绕“为什么做、做成什么、怎么落地、如何演示、如何治理”五个问题展开。',
+        layout: 'default',
+        content: `
+          <div class="grid-3">
+            <div class="panel"><h3>01 项目背景</h3><ul><li>城市运营中心现状与痛点</li><li>客户价值与建设目标</li><li>为什么需要智能体平台</li></ul></div>
+            <div class="panel"><h3>02 总体方案</h3><ul><li>总体定位</li><li>前后台架构</li><li>多角色交互设计</li></ul></div>
+            <div class="panel"><h3>03 核心能力</h3><ul><li>故事线设计</li><li>知识工程</li><li>SOP 场景任务库</li></ul></div>
+            <div class="panel"><h3>04 平台治理</h3><ul><li>权限与审计</li><li>领导偏好策略</li><li>后台运营管理</li></ul></div>
+            <div class="panel"><h3>05 原型落地</h3><ul><li>最小资源配置</li><li>阶段实施路径</li><li>演示策略与风险控制</li></ul></div>
+            <div class="panel"><h3>06 合作建议</h3><ul><li>MVP 范围</li><li>首批任务清单</li><li>下一步共创方式</li></ul></div>
+          </div>`
+      },
+      {
+        section: '背景',
+        title: '项目背景：城市运营中心正在进入“会话驱动”阶段',
+        subtitle: '传统大屏系统擅长展示，但不擅长让人“以自然语言驱动复杂操作”。这正是智能体平台切入的窗口。',
+        layout: 'default',
+        content: `
+          <div class="cards">
+            <div class="card"><h4>现有优势</h4><p>已有大屏、地图、视频、事件、指标等底座，数据与展示基础较扎实。</p></div>
+            <div class="card"><h4>现有不足</h4><p>功能入口分散，跨系统联动复杂，严重依赖熟练操作员。</p></div>
+            <div class="card"><h4>客户变化</h4><p>客户越来越懂技术，不只关注“看起来炫”，更关注平台机制、治理能力与可扩展性。</p></div>
+            <div class="card"><h4>技术时机</h4><p>大模型 + Tool Calling + 知识工程 + 场景编排，已经具备做出高质量原型的条件。</p></div>
+          </div>
+          <div style="height:18px"></div>
+          <div class="quote">现在最值得做的，不是再做一个功能菜单，而是把大厅系统升级为一个可以“听懂、会联动、能汇报、可治理”的智能交互平台。</div>`
+      },
+      {
+        section: '痛点',
+        title: '当前典型痛点：能展示，但不够“会用”',
+        subtitle: '城市运营中心的大屏系统通常已经不缺页面，真正缺的是“高效交互”和“跨系统协同”。',
+        layout: 'default',
+        content: `
+          <div class="grid-2">
+            <div class="panel">
+              <h3>业务侧痛点</h3>
+              <ul>
+                <li>领导想直接问结果，但系统需要层层点击才能下钻。</li>
+                <li>操作员熟练度差异大，接待、值守、应急切换成本高。</li>
+                <li>值班员面对事件时，常常需要同时查地图、视频、指标、SOP。</li>
+                <li>汇报依赖经验，换人后质量波动大。</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>技术侧痛点</h3>
+              <ul>
+                <li>地图、视频、事件、指标系统割裂，缺统一交互入口。</li>
+                <li>复杂操作无法被抽象成标准任务链。</li>
+                <li>缺少角色权限、确认机制与审计闭环。</li>
+                <li>知识与经验沉淀在少数熟练人员脑中，难以复用。</li>
+              </ul>
+            </div>
+          </div>`
+      },
+      {
+        section: '目标',
+        title: '项目目标：建设城市运营中心智能交互与决策辅助平台',
+        subtitle: '不是替代现有大屏，而是在现有底座之上增加一层“自然语言交互 + 能力编排 + 知识治理”平台。',
+        layout: 'default',
+        content: `
+          <div class="grid-4">
+            <div class="panel metric"><div class="big-number">1</div><h4>能问</h4><p>领导、操作员、值班员可通过自然语言触发系统。</p></div>
+            <div class="panel metric"><div class="big-number">2</div><h4>能看</h4><p>地图、指标、视频、事件、专题内容可联动呈现。</p></div>
+            <div class="panel metric"><div class="big-number">3</div><h4>能控</h4><p>支持切场景、切图层、飞位置、推视频、播放脚本。</p></div>
+            <div class="panel metric"><div class="big-number">4</div><h4>能研判</h4><p>围绕火情、水涝、交通等场景给出综合分析与建议。</p></div>
+          </div>
+          <div style="height:18px"></div>
+          <div class="grid-2">
+            <div class="panel soft"><h3>面向客户价值</h3><ul><li>提升大厅展示效率</li><li>降低对个别熟练操作员的依赖</li><li>让领导直接获得结论和重点</li><li>让复杂联动从“人工点击”变成“自然语言任务”</li></ul></div>
+            <div class="panel soft"><h3>面向平台价值</h3><ul><li>为后续试点与生产建设提供架构骨架</li><li>沉淀可复用的 skill、tool、knowledge 资产</li><li>形成可治理、可审计、可持续优化的智能体底座</li></ul></div>
+          </div>`
+      },
+      {
+        section: '定位',
+        title: '产品定位：城市时空智能决策与交互平台',
+        subtitle: '建议对外不要强调“聊天机器人”，而强调“城市运营中心智能交互与决策辅助平台”。',
+        layout: 'default',
+        content: `
+          <div class="quote">面向城市运营中心大厅场景，提供基于自然语言的人机交互能力，让领导、值班员和操作人员能够以对话方式完成态势查询、专题展示、地图联动、视频调取和事件研判。</div>
+          <div style="height:18px"></div>
+          <div class="grid-3">
+            <div class="panel"><h4>交互层</h4><p>大厅智能助手 / 对话入口 / 语音入口 / 推荐问法</p></div>
+            <div class="panel"><h4>平台层</h4><p>智能体编排平台 / skill 管理 / 工具管理 / 权限审计</p></div>
+            <div class="panel"><h4>能力层</h4><p>时空智能 / 视频联动 / 事件研判 / 知识工程 / 汇报生成</p></div>
+          </div>`
+      },
+      {
+        section: '用户',
+        title: '三类核心用户：领导、操作员、值班员',
+        subtitle: '同一个平台，不同角色看到的能力、界面、权限和输出风格都应该不同。',
+        layout: 'default',
+        content: `
+          <div class="matrix">
+            <div class="head">角色</div><div class="head">主要诉求</div><div class="head">典型问题</div><div class="head">系统输出重点</div>
+            <div>领导</div><div>快速看结论、看重点、看风险、要汇报口径</div><div>“今天全区态势怎么样？”</div><div>结论优先、摘要优先、少操作</div>
+            <div>操作员</div><div>快速切场景、切地图、调视频、控大屏</div><div>“切到防汛专题并打开周边视频”</div><div>任务执行、联动结果、确认机制</div>
+            <div>值班员</div><div>查事件、查原因、查 SOP、做研判</div><div>“这起事件该怎么处置？”</div><div>事实、建议、责任主体、后续动作</div>
+          </div>`
+      },
+      {
+        section: '架构总览',
+        title: '总体架构：1 个交互入口 + 1 个编排层 + 4 个能力中台 + 1 个后台治理平台',
+        subtitle: '整套系统建议围绕“交互、编排、执行、知识、治理”五个层次来设计。',
+        layout: 'default',
+        content: `
+          <div class="timeline">
+            <div class="step"><div class="step-num">1</div><div><h4>交互层</h4><p>大厅大屏对话入口、操作席控制台、领导简版入口、语音/文字交互。</p></div></div>
+            <div class="step"><div class="step-num">2</div><div><h4>智能体编排层</h4><p>总控智能体负责理解意图、识别角色、匹配场景任务、编排工具调用。</p></div></div>
+            <div class="step"><div class="step-num">3</div><div><h4>能力中台</h4><p>大屏控制、时空智能、视频联动、事件研判、汇报生成等能力模块化沉淀。</p></div></div>
+            <div class="step"><div class="step-num">4</div><div><h4>数据与系统适配</h4><p>接 GIS/CIM、视频平台、IoT、事件工单、指标系统，通过统一 Capability Gateway 适配。</p></div></div>
+            <div class="step"><div class="step-num">5</div><div><h4>后台治理平台</h4><p>技能中心、工具中心、知识中心、策略中心、审计中心、运营分析中心。</p></div></div>
+          </div>`
+      },
+      {
+        section: '前台',
+        title: '前台交互设计：从“点按钮”升级为“对话驱动”',
+        subtitle: '前台不只是一个聊天窗，而是一套会驱动大屏、地图、视频和面板变化的智能交互界面。',
+        layout: 'default',
+        content: `
+          <div class="grid-3">
+            <div class="panel"><h3>大屏对话入口</h3><ul><li>文本 / 语音输入</li><li>推荐问题与快捷指令</li><li>结果卡片与执行确认</li><li>当前任务链展示</li></ul></div>
+            <div class="panel"><h3>操作席控制台</h3><ul><li>更强执行权限</li><li>可视化操作面板 + 对话</li><li>适合地图/视频/大屏复杂联动</li><li>支持人工接管与回退</li></ul></div>
+            <div class="panel"><h3>领导简版入口</h3><ul><li>聚焦态势、风险、重点、汇报</li><li>少操作，多结果</li><li>输出结论优先</li><li>自动适配偏好策略</li></ul></div>
+          </div>`
+      },
+      {
+        section: '后台',
+        title: '后台管理设计：不是配 Prompt，而是运营平台',
+        subtitle: '懂技术的客户最终会看后台。后台必须能证明这是一套真正可治理的平台。',
+        layout: 'default',
+        content: `
+          <div class="grid-3">
+            <div class="panel"><h4>技能中心</h4><p>管理 skill 定义卡、工作流、质量标准、异常兜底、输出模板。</p></div>
+            <div class="panel"><h4>工具中心</h4><p>管理 L1 原子能力、参数 schema、来源系统、权限等级、失败策略。</p></div>
+            <div class="panel"><h4>知识中心</h4><p>管理事实性知识、程序性知识、经验性知识及版本更新。</p></div>
+            <div class="panel"><h4>策略中心</h4><p>管理角色权限、场景模式、领导偏好、政务话术风格、确认机制。</p></div>
+            <div class="panel"><h4>审计中心</h4><p>记录谁问了什么、触发了哪些 skill、调用了哪些工具、是否人工接管。</p></div>
+            <div class="panel"><h4>运营分析中心</h4><p>跟踪调用量、成功率、时延、失败原因、客户反馈与优化重点。</p></div>
+          </div>`
+      },
+      {
+        section: 'Agent',
+        title: '智能体角色设计：总控 + 场景 + 能力',
+        subtitle: '平台中不建议只放一个“万能大模型助手”，而是按角色拆分智能体职责。',
+        layout: 'default',
+        content: `
+          <div class="grid-2">
+            <div class="panel">
+              <h3>核心角色</h3>
+              <ul>
+                <li><b>总控智能体</b>：理解意图、识别角色、匹配场景任务、编排执行</li>
+                <li><b>大屏控制智能体</b>：切专题、切布局、弹面板、播放脚本</li>
+                <li><b>时空智能体</b>：定位、图层、热区、空间分析、运镜</li>
+                <li><b>视频联动智能体</b>：检索视频、选优、推屏、巡逻</li>
+                <li><b>事件研判智能体</b>：归因分析、SOP 匹配、处置建议、简报生成</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>设计原则</h3>
+              <ul>
+                <li>意图理解和能力执行分离</li>
+                <li>即时操控和业务推理分层</li>
+                <li>场景 skill 不直接绑死底层系统</li>
+                <li>复杂场景由多 skill 组合完成</li>
+              </ul>
+            </div>
+          </div>`
+      },
+      {
+        section: '故事线',
+        title: '4 条标准故事线：既能打客户，也能支撑原型范围',
+        subtitle: '标准故事线不是 PPT 段子，而是平台首批必须打透的高感知任务链。',
+        layout: 'default',
+        content: `
+          <div class="grid-2">
+            <div class="panel"><h4>故事线 1</h4><h3>领导查看城市运行态势</h3><p>一句话查看重点问题、重点区域和汇报口径。</p></div>
+            <div class="panel"><h4>故事线 2</h4><h3>操作员联动地图和视频</h3><p>一句话完成定位、图层切换、视频选优与视频墙联动。</p></div>
+            <div class="panel"><h4>故事线 3</h4><h3>值班员查询事件并获取处置建议</h3><p>查询事件、查看相似案例、匹配 SOP、生成建议。</p></div>
+            <div class="panel"><h4>故事线 4</h4><h3>技术客户查看后台治理能力</h3><p>展示技能中心、工具中心、知识工程、权限和审计闭环。</p></div>
+          </div>`
+      },
+      {
+        section: '难点',
+        title: '4 条故事线最大难点：不是会不会说，而是能不能稳定完成任务',
+        subtitle: '想做到“客户信服”，真正难的是把自然语言、系统能力、业务经验和展示节奏同时对齐。',
+        layout: 'default',
+        content: `
+          <div class="grid-2">
+            <div class="panel"><h4>故事线 1 难点</h4><p>把多源数据变成领导认可的“重点结论”，并用合适顺序汇报出来。</p></div>
+            <div class="panel"><h4>故事线 2 难点</h4><p>让地图-视频-大屏跨系统联动稳定、快速、可解释。</p></div>
+            <div class="panel"><h4>故事线 3 难点</h4><p>把 SOP 和历史案例转成值班员愿意采纳的情境化建议。</p></div>
+            <div class="panel"><h4>故事线 4 难点</h4><p>后台治理逻辑必须自洽，不能只是摆几个管理页面。</p></div>
+          </div>
+          <div style="height:18px"></div>
+          <div class="quote">共性难点只有一个：如何把隐性业务经验转成系统可执行规则。</div>`
+      },
+      {
+        section: '知识工程',
+        title: '知识工程：平台成败的真正内核',
+        subtitle: '地图、视频、大屏只是看得见的外壳；知识工程和规则工程才是系统“像个老手”的核心。',
+        layout: 'default',
+        content: `
+          <div class="grid-3">
+            <div class="panel"><h3>事实性知识</h3><ul><li>行政区划实体库</li><li>POI 与地标库</li><li>设备台账</li><li>通讯录</li><li>术语词典</li><li>图层目录树</li></ul></div>
+            <div class="panel"><h3>程序性知识</h3><ul><li>数字化预案</li><li>响应流程</li><li>事件流转规则</li><li>风险计算模型</li><li>简报模板</li><li>意图槽位映射</li></ul></div>
+            <div class="panel"><h3>经验性知识</h3><ul><li>最佳视角控制</li><li>地名消歧策略</li><li>视频优选策略</li><li>异常兜底知识</li><li>政务话术风格</li></ul></div>
+          </div>`
+      },
+      {
+        section: 'Excel结构',
+        title: '从宝安 Excel 原文件看：这套方法论已经相当完整',
+        subtitle: '当前梳理成果已经不是“几张表”，而是一套知识工程 + 工具工程 + skill 编排的原型蓝图。',
+        layout: 'default',
+        content: `
+          <div class="grid-3">
+            <div class="panel"><h4>核心技能库（skill 定义卡）</h4><p>包含核心意图、触发条件、槽位参数、工作流、工具调用、最佳实践、质量标准、异常兜底、大屏动作、回复模板。</p></div>
+            <div class="panel"><h4>L1 原子能力清单</h4><p>包含地理编码、空间查询、相机飞行、图层控制、视频流、交通指数、车辆 GPS、场景加载等工具能力。</p></div>
+            <div class="panel"><h4>知识工程</h4><p>明确拆成事实性知识、程序性知识、经验性知识三类，为平台提供规则、事实、约束和经验。</p></div>
+          </div>
+          <div style="height:18px"></div>
+          <div class="quote">这套结构已经天然对应平台的技能中心、工具中心和知识中心。</div>`
+      },
+      {
+        section: 'Skill定义',
+        title: 'skill 定义卡：从功能清单升级为“场景任务模板”',
+        subtitle: '最关键的不是“列出 skill 名”，而是把一条场景技能的触发、执行、质量与兜底全部结构化。',
+        layout: 'default',
+        content: `
+          <div class="flow"><span>核心意图</span><span>触发条件</span><span>槽位参数</span><span>工作流</span><span>工具调用</span><span>最佳实践</span><span>质量标准</span><span>异常兜底</span><span>大屏动作</span><span>回复模板</span></div>
+          <div style="height:18px"></div>
+          <div class="grid-2">
+            <div class="panel"><h3>为什么这很重要</h3><ul><li>让 skill 从“概念”变成“可执行模板”</li><li>让 Prompt、规则、代码各司其职</li><li>让质量标准和异常处理前置设计</li><li>便于后续做版本、审计和复用</li></ul></div>
+            <div class="panel"><h3>代表性 skill</h3><ul><li>全域位置导航</li><li>二三维模式切换</li><li>周边视频调阅</li><li>场景主题切换</li><li>水涝分析研判</li><li>自动生成简报</li></ul></div>
+          </div>`
+      },
+      {
+        section: '工具工程',
+        title: 'L1 原子能力：每个工具只做一件事，复杂任务靠组合完成',
+        subtitle: '这是整个平台后续可复用、可扩展、可测试、可治理的基础。',
+        layout: 'default',
+        content: `
+          <div class="grid-4">
+            <div class="panel"><h4>GIS</h4><p>地理编码、空间查询、缓冲区分析、路径规划</p></div>
+            <div class="panel"><h4>CIM</h4><p>相机飞行、视图切换、实体渲染、图层显隐、脚本播放</p></div>
+            <div class="panel"><h4>IoT / 视频</h4><p>积水数据、天气风场、泵站状态、视频流获取、巡逻路线</p></div>
+            <div class="panel"><h4>业务系统</h4><p>交通指数、车辆 GPS、场景加载、事件查询、统计聚合</p></div>
+          </div>
+          <div style="height:18px"></div>
+          <div class="quote">模型负责理解意图，工具和规则负责稳定执行。真正的经验应该尽量写进工具和策略，而不是全部压给大模型临场发挥。</div>`
+      },
+      {
+        section: 'SOP升级',
+        title: '从 SOP 到场景任务库：这是平台化的关键一步',
+        subtitle: 'SOP 不能只停留在文档层，而要升级成平台可执行、可编排、可审计的任务资产。',
+        layout: 'default',
+        content: `
+          <div class="timeline">
+            <div class="step"><div class="step-num">1</div><div><h4>把“做什么”转成“系统怎么执行”</h4><p>将场景目标、触发语义、执行步骤、工具链、输出模板结构化。</p></div></div>
+            <div class="step"><div class="step-num">2</div><div><h4>把隐性经验显性化</h4><p>将高点优先、默认半径、最佳视角、异常容错等经验写入规则与策略。</p></div></div>
+            <div class="step"><div class="step-num">3</div><div><h4>把任务挂到角色与权限上</h4><p>明确谁可见、谁可执行、哪些必须确认、哪些只能建议。</p></div></div>
+            <div class="step"><div class="step-num">4</div><div><h4>把运行过程纳入审计</h4><p>每次 skill 调用、工具调用、异常回退和人工接管都能被回放和分析。</p></div></div>
+          </div>`
+      },
+      {
+        section: '角色权限',
+        title: '权限与确认机制：政务场景里必须前置设计',
+        subtitle: '平台如果没有明确的角色权限、模式权限和动作确认机制，再炫的 AI 也难以进入正式场景。',
+        layout: 'default',
+        content: `
+          <div class="grid-3">
+            <div class="panel"><h4>身份权限</h4><p>领导、操作员、值班员、管理员、运维员等基础身份权限。</p></div>
+            <div class="panel"><h4>模式权限</h4><p>观摩模式、演示模式、值守模式、控制模式、应急模式。</p></div>
+            <div class="panel"><h4>动作确认</h4><p>免确认、弱确认、强确认、审批确认四级机制。</p></div>
+          </div>
+          <div style="height:18px"></div>
+          <div class="panel soft"><h3>建议新增到 skill / tool 配置中的字段</h3><div class="pill-list"><span class="pill">适用角色</span><span class="pill">可见范围</span><span class="pill">可执行范围</span><span class="pill">风险等级</span><span class="pill">是否二次确认</span><span class="pill">适用场景模式</span></div></div>`
+      },
+      {
+        section: '领导偏好',
+        title: '领导偏好建模：不要做黑箱记忆，要做可控策略卡',
+        subtitle: '领导偏好不是“让模型自己记住某个人”，而是建立可配置、可查看、可审计的偏好策略层。',
+        layout: 'default',
+        content: `
+          <div class="grid-2">
+            <div class="panel"><h3>偏好建模四层</h3><ul><li>信息关注偏好：先看风险、亮点还是重点区域</li><li>表达风格偏好：先结论还是先背景</li><li>展示顺序偏好：先总览、先地图还是先视频</li><li>禁忌与红线：什么不能直接说、什么必须谨慎说</li></ul></div>
+            <div class="panel"><h3>落地方式</h3><ul><li>公共政务话术风格放在知识工程层</li><li>个性化偏好独立为策略卡</li><li>挂载到简报生成、自动汇报演示、领导模式 skill</li><li>有维护责任人、适用场景、生效时间和版本记录</li></ul></div>
+          </div>`
+      },
+      {
+        section: '汇报能力',
+        title: '汇报能力设计：让系统“会说”，但更重要的是“说得对”',
+        subtitle: '汇报能力不是普通文本生成，而是要把数据、事件、画面、口径和表达风格组织成可直接使用的管理输出。',
+        layout: 'default',
+        content: `
+          <div class="cards">
+            <div class="card"><h4>自动生成简报</h4><p>基于当前态势自动聚合指标、异常、重点事件，生成结构化简报。</p></div>
+            <div class="card"><h4>自动汇报演示</h4><p>按脚本驱动运镜、图层、弹窗和 TTS，实现“电影级”讲解。</p></div>
+            <div class="card"><h4>简报模板</h4><p>通过 Jinja / 模板系统保持政务汇报结构稳定。</p></div>
+            <div class="card"><h4>政务话术风格</h4><p>严肃、确定、简洁，避免口语化、模糊化、娱乐化表达。</p></div>
+          </div>`
+      },
+      {
+        section: '原型资源',
+        title: '原型搭建资源评估：最小也能做出完整演示闭环',
+        subtitle: '当前阶段目标是高质量原型，不是生产级高并发系统。因此资源可以控制在比较克制的范围。',
+        layout: 'default',
+        content: `
+          <div class="grid-4">
+            <div class="panel metric"><div class="big-number">8C</div><p>最小建议 CPU</p></div>
+            <div class="panel metric"><div class="big-number">32G</div><p>最小建议内存</p></div>
+            <div class="panel metric"><div class="big-number">100G</div><p>最小建议 SSD</p></div>
+            <div class="panel metric"><div class="big-number">1+1</div><p>主模型 + 轻量模型 API</p></div>
+          </div>
+          <div style="height:18px"></div>
+          <div class="grid-2">
+            <div class="panel"><h3>支持内容</h3><ul><li>前台交互原型</li><li>后台治理端原型</li><li>5 个智能体角色</li><li>4 条标准故事线</li><li>知识工程样例数据</li></ul></div>
+            <div class="panel"><h3>为什么够用</h3><ul><li>原型阶段并发低</li><li>核心是体验与编排，不是算力堆叠</li><li>视频流不落盘可大幅降低存储要求</li><li>政务网可联网时优先用 API 模型方案</li></ul></div>
+          </div>`
+      },
+      {
+        section: '实施周期',
+        title: '建议实施路径：4~6 周打出第一版高质量原型',
+        subtitle: '以“先形成完整闭环，再逐步扩展”为原则，而不是一开始追求全量接入。',
+        layout: 'default',
+        content: `
+          <div class="timeline">
+            <div class="step"><div class="step-num">W1</div><div><h4>定范围、定故事线、定界面</h4><p>收敛 4 条标准故事线，确认前后台页面结构，明确首批 skill / tool / knowledge 范围。</p></div></div>
+            <div class="step"><div class="step-num">W2-3</div><div><h4>搭前台主原型 + Agent 编排</h4><p>完成大屏交互页、地图联动、视频联动、基础任务编排与多轮对话。</p></div></div>
+            <div class="step"><div class="step-num">W4</div><div><h4>补后台治理能力</h4><p>完成技能中心、工具中心、知识中心、权限页、审计页的高保真原型。</p></div></div>
+            <div class="step"><div class="step-num">W5</div><div><h4>补事件研判与汇报能力</h4><p>接入 SOP、简报模板、偏好策略，形成更完整的业务演示链。</p></div></div>
+            <div class="step"><div class="step-num">W6</div><div><h4>联调与客户汇报打磨</h4><p>稳定演示路径、准备兜底策略、打磨汇报话术和切换节奏。</p></div></div>
+          </div>`
+      },
+      {
+        section: 'MVP',
+        title: 'MVP 建议：先打透 12~20 条高价值任务',
+        subtitle: '不建议一开始铺太大。先把客户最有感知、最容易稳定跑通的任务做扎实。',
+        layout: 'default',
+        content: `
+          <div class="pill-list">
+            <span class="pill">态势总览</span>
+            <span class="pill">专题切换</span>
+            <span class="pill">区域定位</span>
+            <span class="pill">图层控制</span>
+            <span class="pill">周边视频调阅</span>
+            <span class="pill">自动视频巡逻</span>
+            <span class="pill">影响范围分析</span>
+            <span class="pill">水涝分析研判</span>
+            <span class="pill">积水监测</span>
+            <span class="pill">交通分析研判</span>
+            <span class="pill">重点车辆追踪</span>
+            <span class="pill">自动生成简报</span>
+            <span class="pill">自动汇报演示</span>
+            <span class="pill">资源/通讯录查询</span>
+            <span class="pill">角色权限切换</span>
+            <span class="pill">审计回放</span>
+          </div>
+          <div style="height:18px"></div>
+          <div class="quote">先把这批任务做到“有明确输入、有稳定工具链、有输出模板、有异常回退、有角色边界”，平台骨架就立住了。</div>`
+      },
+      {
+        section: '演示页',
+        title: '客户演示策略：让客户先看到价值，再看到架构',
+        subtitle: '汇报时不建议一上来先讲技术架构，建议先让客户看到效果，再解释机制。',
+        layout: 'default',
+        content: `
+          <div class="timeline">
+            <div class="step"><div class="step-num">1</div><div><h4>先演示效果</h4><p>先用一句话触发地图、视频、大屏联动，让客户直观看到“自然语言驱动复杂操作”。</p></div></div>
+            <div class="step"><div class="step-num">2</div><div><h4>再讲多角色</h4><p>展示领导、操作员、值班员三个角色的不同输出和权限边界。</p></div></div>
+            <div class="step"><div class="step-num">3</div><div><h4>再讲后台治理</h4><p>展示 skill、tool、knowledge、策略、审计几张核心后台页，证明这是平台，不是 Demo。</p></div></div>
+            <div class="step"><div class="step-num">4</div><div><h4>最后讲资源与路径</h4><p>说明原型资源需求、分阶段路径和未来可扩展到试点系统的演进路线。</p></div></div>
+          </div>`
+      },
+      {
+        section: '风险',
+        title: '风险与治理：平台必须从第一天就考虑可控性',
+        subtitle: '客户越懂技术，越会关注风险控制与平台治理，而不只看前台效果。',
+        layout: 'default',
+        content: `
+          <div class="grid-2">
+            <div class="panel"><h3>主要风险</h3><ul><li>模型会说不会做</li><li>多系统联动不稳定</li><li>权限越界</li><li>知识库过时</li><li>视频/数据异常影响演示</li><li>汇报输出不符合政务场景</li></ul></div>
+            <div class="panel"><h3>治理策略</h3><ul><li>所有执行动作必须走工具调用</li><li>关键经验写进规则 / 代码 / 策略</li><li>角色权限 + 模式权限 + 动作确认三层控制</li><li>知识工程分层治理与版本管理</li><li>异常兜底与人工接管前置设计</li><li>输出风格和领导偏好策略化</li></ul></div>
+          </div>`
+      },
+      {
+        section: '价值',
+        title: '对客户的核心价值：不是多一个系统，而是让现有大厅“变聪明”',
+        subtitle: '平台的价值在于提升现有底座的使用效率、指挥效率和展示效率。',
+        layout: 'default',
+        content: `
+          <div class="grid-3">
+            <div class="panel"><h4>管理价值</h4><p>领导更快看到重点和结论，减少信息层层翻找。</p></div>
+            <div class="panel"><h4>业务价值</h4><p>值班员更快获取事实、建议和责任主体，提升处置效率。</p></div>
+            <div class="panel"><h4>运营价值</h4><p>减少对个别熟练操作员的依赖，把经验沉淀为可复用资产。</p></div>
+            <div class="panel"><h4>展示价值</h4><p>接待、汇报、演示更具科技感、完整性和可解释性。</p></div>
+            <div class="panel"><h4>技术价值</h4><p>形成可扩展的 skill / tool / knowledge 底座，为后续试点和生产奠基。</p></div>
+            <div class="panel"><h4>治理价值</h4><p>权限、审计、模板、偏好、规则全部平台化，避免靠个人兜底。</p></div>
+          </div>`
+      },
+      {
+        section: '合作方式',
+        title: '建议合作方式：以“共创原型 + 场景验证 + 平台固化”推进',
+        subtitle: '城市运营中心这类项目，最适合先共创原型，再逐步收敛成正式建设方案。',
+        layout: 'default',
+        content: `
+          <div class="grid-2">
+            <div class="panel"><h3>第一阶段：共创原型</h3><ul><li>明确 4 条标准故事线</li><li>梳理首批 12~20 条任务</li><li>接入样例 / 脱敏数据</li><li>完成前后台高保真原型</li></ul></div>
+            <div class="panel"><h3>第二阶段：场景验证</h3><ul><li>围绕防汛、交通、汇报等典型场景联调</li><li>打磨知识工程和偏好策略</li><li>验证角色权限和审计链路</li></ul></div>
+            <div class="panel"><h3>第三阶段：平台固化</h3><ul><li>沉淀 skill / tool / knowledge 资产</li><li>形成后台治理能力</li><li>准备试点与正式立项材料</li></ul></div>
+            <div class="panel"><h3>第四阶段：试点扩展</h3><ul><li>接入更多真实系统与实时数据</li><li>扩展更多街道 / 场景</li><li>向正式城市运营智能体平台演进</li></ul></div>
+          </div>`
+      },
+      {
+        section: '总结',
+        title: '总结：这不是“AI + 大屏”，而是一套可治理的城市运营智能体平台',
+        subtitle: '要打动客户，核心不是模型多强，而是平台是否体现出业务理解、知识工程、系统编排和治理机制。',
+        layout: 'default',
+        content: `
+          <div class="quote">我们建议以“城市运营中心智能交互与决策辅助平台”为定位，通过自然语言交互、时空智能、视频联动、知识工程、SOP 场景任务库和后台治理能力，把现有大厅系统升级成一套真正可用、可演示、可扩展、可审计的智能体平台。</div>
+          <div style="height:20px"></div>
+          <div class="flow"><span>前台有感知</span><span>后台有治理</span><span>知识可沉淀</span><span>经验可复制</span><span>系统可扩展</span><span>结果可审计</span></div>`
+      },
+      {
+        section: '下一步',
+        title: '建议下一步：启动原型共创，先把第一批高价值任务打透',
+        subtitle: '如果客户认可方向，下一步最适合做的不是继续写大方案，而是直接开始原型共创与任务固化。',
+        layout: 'default',
+        content: `
+          <div class="grid-3">
+            <div class="panel"><h3>下一步 1</h3><p>确认 4 条标准故事线和首批任务清单。</p></div>
+            <div class="panel"><h3>下一步 2</h3><p>把现有 Excel 资产升级成 skill / tool / knowledge / strategy 的平台字段模型。</p></div>
+            <div class="panel"><h3>下一步 3</h3><p>进入 4~6 周高保真原型阶段，形成客户可现场感知的演示系统。</p></div>
+          </div>
+          <div style="height:24px"></div>
+          <p class="muted">谢谢。可根据客户反馈继续输出：客户版方案书、研发版表结构方案、PPT 版、可交互原型版。</p>`
+      }
+    ];
+
+    const deck = document.getElementById('deck');
+    slides.forEach((s, idx) => {
+      const slide = document.createElement('section');
+      slide.className = 'slide';
+      slide.innerHTML = `
+        <div class="topbar"><div>${s.section}</div><div>${idx + 1} / ${slides.length}</div></div>
+        <h1 class="title">${s.title.replace(/\n/g, '<br>')}</h1>
+        <p class="subtitle">${s.subtitle}</p>
+        ${s.content}
+        <div class="footer"><div>宝安城市运营中心智能体平台汇报稿</div><div class="page">PAGE ${String(idx + 1).padStart(2,'0')}</div></div>`;
+      deck.appendChild(slide);
+    });
+
+    let current = 0;
+    const nodes = Array.from(document.querySelectorAll('.slide'));
+    function show(i) {
+      current = (i + nodes.length) % nodes.length;
+      nodes.forEach((n, idx) => n.classList.toggle('active', idx === current));
+      location.hash = `slide-${current + 1}`;
+    }
+    function next() { show(current + 1); }
+    function prev() { show(current - 1); }
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); next(); }
+      if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+      if (e.key.toLowerCase() === 'f') {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+        else document.exitFullscreen?.();
+      }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(nodes.length - 1);
+    });
+    document.addEventListener('click', (e) => {
+      const ignore = e.target.closest('a, button, input, textarea');
+      if (!ignore) next();
+    });
+    const hash = location.hash.match(/slide-(\d+)/);
+    show(hash ? Math.max(0, Math.min(nodes.length - 1, Number(hash[1]) - 1)) : 0);
+  </script>
+</body>
+</html>

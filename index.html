@@ -3,24 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Irene的个人站</title>
-  <meta name="description" content="记录想法、项目和日常笔记" />
+  <title>Jerry的小站</title>
+  <meta id="site-meta-description" name="description" content="一个很个人的记录角落，放工作中的观察与判断，也放生活里的感受和想法。" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <link rel="icon" type="image/png" href="./assets/tiger-mouse-favicon.png?v=202603211809" />
-  <link rel="stylesheet" href="./styles.css?v=202603220030-header-auth" />
+  <link id="site-favicon" rel="icon" type="image/svg+xml" href="./assets/mouse-favicon.svg" />
+  <script>
+    (function () {
+      try {
+        var key = 'jerry-notes-theme';
+        var mode = localStorage.getItem(key) || 'light';
+        var real = mode === 'dark' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', real);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="./styles.css?v=202603242258" />
 </head>
-<body>
+<body data-theme="light">
   <header class="site-header">
     <div class="container">
-      <img class="header-banner" src="./assets/ai-generated-banner.jpg" alt="AI生成日系黑发美女标题图" />
+      <img id="site-banner" class="header-banner" src="./assets/cat-mouse-banner.svg?v=202603212115" alt="卡通风格猫追老鼠横幅插画（原创）" />
       <div class="site-title-row">
-        <div>
-          <h1>Irene的个人站</h1>
-          <p>写点东西，记录一些有意思的事。</p>
+        <div class="site-identity">
+          <span id="site-kicker" class="site-kicker hidden"></span>
+          <h1 id="site-title">Jerry的小站</h1>
+          <p id="site-hero-description">一个很个人的记录角落，放工作中的观察与判断，也放生活里的感受和想法。</p>
         </div>
         <div class="site-actions">
+          <div class="utility-bar">
+            <button id="theme-toggle" class="btn btn-small theme-toggle-icon" type="button" aria-label="切换主题" title="切换主题">
+              <span class="theme-icon" aria-hidden="true">🌙</span>
+            </button>
+          </div>
           <div class="auth-controls">
             <div class="auth-row">
               <a id="login-btn" class="btn btn-small btn-feishu hidden" href="/api/auth/feishu/login">
@@ -32,7 +48,7 @@
                     <path fill="#0F866C" d="M17.4 11.8c1 0 1.7.7 1.7 1.8 0 4-2.4 7.1-6 7.1h-1.3v-3c0-3.5 2.1-5.9 5.4-5.9h.2z"/>
                   </svg>
                 </span>
-                <span>飞书登录</span>
+                <span>飞书登录 · 查看内部资料</span>
               </a>
               <div id="user-session" class="user-session hidden">
                 <img id="user-avatar" class="user-avatar hidden" alt="飞书头像" />
@@ -41,9 +57,6 @@
                 </div>
                 <button id="logout-btn" class="btn btn-small" type="button">退出</button>
               </div>
-              <button id="theme-toggle" class="btn btn-small theme-toggle-icon" type="button" aria-label="切换主题" title="切换主题">
-                <span class="theme-icon" aria-hidden="true">🌙</span>
-              </button>
             </div>
             <div id="auth-note" class="auth-note hidden" aria-live="polite"></div>
           </div>
@@ -55,7 +68,6 @@
   <main class="container main-layout">
     <section class="content-column">
       <section id="posts" class="card">
-        <h2>最近更新</h2>
         <ul id="post-list" class="post-list"></ul>
       </section>
 
@@ -64,25 +76,37 @@
           <div class="viewer-toolbar-left">
             <button id="back-btn" class="btn">← 返回列表</button>
           </div>
-
         </div>
         <article id="post-content" class="markdown-body"></article>
+        <div class="post-fab-actions" aria-label="文章操作">
+          <button id="share-post-btn" class="btn post-fab-btn post-share-btn" type="button" title="分享文章">分享</button>
+          <button id="export-pdf-btn" class="btn post-fab-btn" type="button" title="导出为 PDF">导出为 PDF</button>
+        </div>
+        <div class="post-nav-fab-actions" aria-label="文章导航">
+          <button id="post-back-fab-btn" class="btn post-nav-fab-btn" type="button" title="后退" aria-label="后退">←</button>
+          <button id="post-refresh-fab-btn" class="btn post-nav-fab-btn post-refresh-fab-btn" type="button" title="刷新" aria-label="刷新">↺</button>
+        </div>
       </section>
 
       <section id="about" class="card">
-        <h2>关于我</h2>
-        <p>这是 Irene Notes 的第一版。先用最轻的方式跑起来，后续再逐步补齐搜索、归档和内容管理。</p>
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">About This Site</span>
+            <h2>关于我</h2>
+          </div>
+        </div>
+        <p id="about-copy">这里长期记录产品、项目、行业理解和日常思考。公开内容偏方法、观点和案例；登录后可继续查看内部工作手册、学习资料与阶段性复盘。</p>
       </section>
     </section>
 
-    <aside id="index-panel" class="index-panel">
+    <aside id="index-panel" class="index-panel collapsed-mobile">
       <div class="index-panel-head">
         <div class="filter-title">索引筛选</div>
-        <button id="filter-toggle" class="btn btn-small filter-toggle-btn" type="button" aria-expanded="true">收起</button>
+        <button id="filter-toggle" class="btn btn-small filter-toggle-btn" type="button" aria-expanded="false">筛选</button>
       </div>
 
       <div class="index-panel-body" id="index-panel-body">
-        <button id="reset-filter" class="btn btn-small">重置筛选</button>
+        <button id="reset-filter" class="btn btn-small" type="button">重置筛选</button>
 
         <h3>按主题标签</h3>
         <div id="tag-filter" class="chips"></div>
@@ -95,9 +119,12 @@
   </main>
 
   <footer class="site-footer">
-    <div class="container">© <span id="year"></span> Irene's Notes</div>
+    <div class="container">© <span id="year"></span> <span id="site-footer-text">我的个人站</span></div>
   </footer>
 
-  <script src="./app.js?v=202603220030-header-auth"></script>
+  <div id="site-toast" class="site-toast hidden" aria-live="polite"></div>
+
+  <script type="module" src="./site-shell.mjs?v=202603242300"></script>
+  <script type="module" src="./app.js?v=202603242300"></script>
 </body>
 </html>

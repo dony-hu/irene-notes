@@ -1,8 +1,8 @@
 {
-  "name": "irene-notes",
+  "name": "jerry-notes",
   "private": true,
   "version": "1.0.0",
-  "description": "Irene Notes static site",
+  "description": "Jerry Notes static site",
   "scripts": {
     "build": "node scripts/build-site.mjs",
     "generate:posts": "node scripts/generate-posts-index.mjs",
@@ -10,8 +10,7 @@
     "qc:table-width": "node scripts/qc-table-width.mjs",
     "qc:dom-overflow": "node scripts/qc-dom-overflow.mjs",
     "qc:mobile-snapshot": "node scripts/qc-mobile-snapshot.mjs",
-    "publish:check": "node scripts/publish-check.mjs",
-    "sync:from-jerry": "node scripts/sync-system-from-jerry.mjs ../jerry-notes"
+    "publish:check": "node scripts/publish-check.mjs"
   },
   "engines": {
     "node": ">=18"

@@ -1,4 +1,4 @@
-# Irene Notes 发布系统 PRD
+# Jerry Notes 发布系统 PRD
 
 ## 1. 背景
 

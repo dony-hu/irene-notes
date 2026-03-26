@@ -153,114 +153,146 @@ function normalizeVisibility(value) {
   return '';
 }
 
+const LIKELY_INTERNAL_SLUG_PATTERNS = [
+  { pattern: /(?:^|-)daily-plan(?:-|$)/i, reason: 'slug looks like a daily plan' },
+  { pattern: /(?:^|-)daily-work-brief(?:-|$)/i, reason: 'slug looks like a work brief' },
+  { pattern: /(?:^|-)meeting-minutes(?:-|$)/i, reason: 'slug looks like meeting minutes' },
+  { pattern: /(?:^|-)reading-notes(?:-|$)/i, reason: 'slug looks like an internal reading-notes collection' },
+  { pattern: /(?:^|-)worklogs?(?:-|$)/i, reason: 'slug looks like a work log' },
+  { pattern: /(?:^|-)rd-daily(?:-|$)/i, reason: 'slug looks like an R&D daily report' },
+  { pattern: /(?:^|-)learning-handbook(?:-|$)/i, reason: 'slug looks like a learning handbook' },
+  { pattern: /(?:^|-)weekly-report(?:-|$)/i, reason: 'slug looks like a weekly report' },
+  { pattern: /(?:^|-)special-initiative-report(?:-|$)/i, reason: 'slug looks like an initiative report' },
+  { pattern: /(?:^|-)people-work-(?:summary|analysis)(?:-|$)/i, reason: 'slug looks like a people/work analysis' },
+  { pattern: /(?:^|-)tianshu-status(?:-|$)/i, reason: 'slug looks like a project status summary' },
+  { pattern: /(?:^|-)product-code-analysis(?:-|$)/i, reason: 'slug looks like a code analysis report' },
+];
+
+const LIKELY_INTERNAL_TITLE_PATTERNS = [
+  { pattern: /工作计划|今日工作计划/, reason: 'title looks like a work plan' },
+  { pattern: /工作日志/, reason: 'title looks like a work log' },
+  { pattern: /会议纪要/, reason: 'title looks like meeting minutes' },
+  { pattern: /学习手册/, reason: 'title looks like an internal handbook' },
+  { pattern: /周汇报|周报|日报|月报/, reason: 'title looks like a report' },
+  { pattern: /读后感汇总/, reason: 'title looks like a collection of employee sharing notes' },
+  { pattern: /交流方案|交流思路/, reason: 'title looks like a customer/internal solution deck' },
+  { pattern: /代码分析报告/, reason: 'title looks like an internal analysis report' },
+  { pattern: /现状总览/, reason: 'title looks like a project status summary' },
+  { pattern: /推进报告/, reason: 'title looks like an initiative progress report' },
+  { pattern: /团队 AI 分享|分享建议/, reason: 'title looks like an internal team sharing material' },
+  { pattern: /工作分析/, reason: 'title looks like an internal work analysis' },
+];
+
+function findLikelyInternalReasons({ slug = '', title = '' }) {
+  const reasons = new Set();
+
+  for (const { pattern, reason } of LIKELY_INTERNAL_SLUG_PATTERNS) {
+    if (pattern.test(slug)) reasons.add(reason);
+  }
+
+  for (const { pattern, reason } of LIKELY_INTERNAL_TITLE_PATTERNS) {
+    if (pattern.test(title)) reasons.add(reason);
+  }
+
+  return [...reasons];
+}
+
 function firstHeading(markdown = '') {
   const match = normalizeLineEndings(markdown).match(/^#\s+(.+)$/m);
   return match ? match[1].trim() : '';
 }
 
-function stripMarkdownInline(text = '') {
-  return String(text)
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/\*\*([^*]+)\*\*/g, '$1')
-    .replace(/\*([^*]+)\*/g, '$1')
-    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-    .replace(/!\[[^\]]*\]\([^\)]+\)/g, '')
-    .replace(/[#>*_-]/g, ' ')
+function stripMarkdownDecorators(line = '') {
+  return String(line)
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/?(strong|em|b|i|code|mark|small|sub|sup|span)[^>]*>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[`*_>#]/g, '')
+    .replace(/@[^\s，。；：:、]+/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function looksReadableSummary(text = '') {
-  if (!text || text.length < 16) return false;
-  if (text.includes('|') || text.includes('<') || text.includes('>')) return false;
-  if (text.includes('@part:') || text.includes('@tag:')) return false;
+function deriveSummary(markdown = '') {
+  const lines = normalizeLineEndings(markdown).split('\n');
+  const parts = [];
+  let inCode = false;
 
-  const clean = text.replace(/\s+/g, '');
-  const readableChars = (clean.match(/[\u4e00-\u9fffA-Za-z0-9，。！？；：“”‘’、,.!?;:()（）【】《》\-]/g) || []).length;
-  const ratio = readableChars / Math.max(clean.length, 1);
-  if (ratio < 0.88) return false;
+  for (const line of lines) {
+    const trimmed = line.trim();
 
-  const hasCJK = /[\u4e00-\u9fff]/.test(text);
-  const hasLatinWord = /[A-Za-z]{3,}/.test(text);
-  return hasCJK || hasLatinWord;
-}
+    if (trimmed.startsWith('```')) {
+      inCode = !inCode;
+      continue;
+    }
 
-function firstSummary(markdown = '') {
-  const lines = normalizeLineEndings(markdown)
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .filter((line) => !line.startsWith('#'))
-    .filter((line) => !line.startsWith('>'))
-    .filter((line) => !line.startsWith('@'))
-    .filter((line) => !line.startsWith('```'))
-    .filter((line) => !line.startsWith('!['))
-    .filter((line) => !/^\d+\.\s/.test(line))
-    .filter((line) => !/^[-*+]\s/.test(line));
+    if (inCode || !trimmed) continue;
+    if (trimmed.startsWith('#')) continue;
+    if (trimmed.startsWith('@')) continue;
+    if (trimmed === '---') continue;
+    if (trimmed.startsWith('![')) continue;
+    if (trimmed.startsWith('|')) continue;
 
-  for (const line of lines.slice(0, 24)) {
-    const candidate = stripMarkdownInline(line);
-    if (!looksReadableSummary(candidate)) continue;
-    return candidate.length > 110 ? `${candidate.slice(0, 110)}…` : candidate;
+    const normalizedSource = trimmed
+      .replace(/^>\s?/, '')
+      .replace(/^[-*+]\s+/, '')
+      .replace(/^\d+\.\s+/, '')
+      .trim();
+
+    const plainSource = stripMarkdownDecorators(normalizedSource);
+
+    if (/^查看(原文|可编辑版|可编辑)/.test(plainSource)) continue;
+    if (/^(这个文件是|生成命令：|打开官网|打开黑板报)/.test(plainSource)) continue;
+    if (/\.md$/i.test(normalizedSource)) continue;
+
+    const normalized = plainSource;
+
+    if (!normalized || normalized.length < 8) continue;
+    if (/^[·•\-=:：/| ]+$/.test(normalized)) continue;
+
+    parts.push(normalized);
+    if (parts.length === 1 && /[。！？]$/.test(normalized) && normalized.length >= 24) break;
+    if (parts.join(' ').length >= 96) break;
   }
 
-  return '';
+  if (!parts.length) return undefined;
+
+  const full = parts.join(' ').trim();
+  const summary = full.slice(0, 96).trim();
+  return summary ? `${summary}${full.length > 96 ? '…' : ''}` : undefined;
 }
 
-function fallbackSummary(title = '') {
-  const t = String(title || '').trim();
-  if (!t) return '这篇文章记录了一个完整主题，建议点开查看正文。';
-  if (t.length <= 22) return `${t}：核心观点与关键信息已整理在正文。`;
-  return `${t.slice(0, 22)}：核心观点与关键信息已整理在正文。`;
-}
-
-function toTimestamp(value) {
-  if (!value) return Number.NaN;
-  const input = String(value).trim();
-  if (!input) return Number.NaN;
-
-  const normalized = /\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}(:\d{2})?$/.test(input)
-    ? input.replace(' ', 'T')
-    : input;
-
-  const t = Date.parse(normalized);
-  return Number.isNaN(t) ? Number.NaN : t;
-}
-
-function resolvePostTimestamp(post) {
+function getSortTimestamp(post) {
   const candidates = [
+    post.updatedAt,
+    post.updated,
     post.datetime,
-    post.dateTime,
-    post.publishedAt,
-    post.published_at,
     post.date,
-  ];
+  ].filter(Boolean);
 
   for (const value of candidates) {
-    const t = toTimestamp(value);
-    if (!Number.isNaN(t)) return t;
-  }
-
-  if (post.sourcePath) {
-    try {
-      return fs.statSync(post.sourcePath).mtimeMs;
-    } catch {
-      // ignore
-    }
+    const ts = Date.parse(value);
+    if (!Number.isNaN(ts)) return ts;
   }
 
   return 0;
 }
 
 function comparePosts(a, b) {
-  const ta = resolvePostTimestamp(a);
-  const tb = resolvePostTimestamp(b);
+  const aTs = getSortTimestamp(a);
+  const bTs = getSortTimestamp(b);
 
-  if (ta !== tb) {
-    return tb - ta;
+  if (aTs !== bTs) {
+    return bTs - aTs;
   }
 
-  return b.slug.localeCompare(a.slug, 'zh-CN');
+  if (a.date !== b.date) {
+    return a.date < b.date ? 1 : -1;
+  }
+
+  return a.slug.localeCompare(b.slug, 'zh-CN');
 }
 
 function toRecord(post) {
@@ -273,6 +305,9 @@ function toRecord(post) {
   };
 
   if (post.datetime) record.datetime = post.datetime;
+  if (post.updated) record.updated = post.updated;
+  if (post.updatedAt) record.updatedAt = post.updatedAt;
+
   if (post.type) record.type = post.type;
   if (post.url) record.url = post.url;
   if (post.summary) record.summary = post.summary;
@@ -306,13 +341,15 @@ export function collectPosts(rootDir) {
 
     const title = pickString(data.title, firstHeading(content));
     const date = pickString(data.date);
-    const datetime = pickString(data.datetime, data.dateTime, data.publishedAt, data.published_at);
     const tags = normalizeTags(data.tags);
     const typeValue = pickString(data.type);
     const type = typeValue || undefined;
     const visibility = normalizeVisibility(data.visibility || data.access || data.audience);
-    const url = pickString(data.url) || (type === 'webslides' ? `./${slug}.html` : undefined);
-    const summary = pickString(data.summary, firstSummary(content), fallbackSummary(title)) || undefined;
+    const url = pickString(data.url) || (type === 'webslides' ? `./slides/${slug}.html` : undefined);
+    const summary = pickString(data.summary) || deriveSummary(content);
+    const datetime = pickString(data.datetime) || undefined;
+    const updated = pickString(data.updated) || undefined;
+    const updatedAt = pickString(data.updatedAt, data.updated_at) || undefined;
     const fileErrors = [];
 
     if (!title) {
@@ -327,6 +364,15 @@ export function collectPosts(rootDir) {
       fileErrors.push(`${file}: invalid visibility (use public/external or internal/private)`);
     }
 
+    if (visibility === 'public') {
+      const likelyInternalReasons = findLikelyInternalReasons({ slug, title });
+      if (likelyInternalReasons.length) {
+        fileErrors.push(
+          `${file}: likely internal content is marked public (${likelyInternalReasons.join('; ')}); set visibility: internal`,
+        );
+      }
+    }
+
     if (fileErrors.length) {
       errors.push(...fileErrors);
       continue;
@@ -337,6 +383,8 @@ export function collectPosts(rootDir) {
       slug,
       date,
       datetime,
+      updated,
+      updatedAt,
       tags,
       type,
       url,

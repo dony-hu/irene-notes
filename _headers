@@ -8,7 +8,19 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 /posts/posts.json
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: public, max-age=60, stale-while-revalidate=300
 
 /posts/*.md
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: public, max-age=300, stale-while-revalidate=600
+
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.mjs
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

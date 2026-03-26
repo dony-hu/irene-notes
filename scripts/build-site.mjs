@@ -10,27 +10,23 @@ const rootDir = path.resolve(scriptDir, '..');
 const distDir = path.join(rootDir, 'dist');
 const sourcePostsJson = path.join(rootDir, 'posts', 'posts.json');
 const distPostsDir = path.join(distDir, 'posts');
+const distSlidesDir = path.join(distDir, 'slides');
 
-const ROOT_FILE_EXTENSIONS = new Set([
-  '.css',
-  '.html',
-  '.ico',
-  '.jpeg',
-  '.jpg',
-  '.js',
-  '.json',
-  '.png',
-  '.svg',
-  '.txt',
-  '.webp',
-  '.xml',
+const ROOT_FILE_NAMES = new Set([
+  'CNAME',
+  '_headers',
+  '_redirects',
+  'index.html',
+  'app.js',
+  'site.config.mjs',
+  'site-shell.mjs',
+  'styles.css',
+  'slides.css',
+  'MachineryAgePage.jpg',
 ]);
 
-const ROOT_FILE_NAMES = new Set(['CNAME', '_headers', '_redirects']);
-
 function shouldCopyRootFile(fileName) {
-  if (fileName === 'package.json' || fileName === 'package-lock.json') return false;
-  return ROOT_FILE_NAMES.has(fileName) || ROOT_FILE_EXTENSIONS.has(path.extname(fileName).toLowerCase());
+  return ROOT_FILE_NAMES.has(fileName);
 }
 
 function copyRootStaticFiles() {
@@ -47,6 +43,7 @@ function copyRootStaticFiles() {
     if (!shouldCopyRootFile(entry.name)) continue;
     fs.copyFileSync(path.join(rootDir, entry.name), path.join(distDir, entry.name));
   }
+
 }
 
 function copyPublishedPosts(posts) {
@@ -76,10 +73,12 @@ function removeNoiseFiles(dir) {
 }
 
 function generateWebslides(posts) {
+  fs.mkdirSync(distSlidesDir, { recursive: true });
+
   for (const post of posts) {
     if (post.type !== 'webslides') continue;
 
-    const outputFile = path.join(distDir, `${post.slug}.html`);
+    const outputFile = path.join(distSlidesDir, `${post.slug}.html`);
     execFileSync(
       process.execPath,
       [path.join(rootDir, 'scripts', 'md-to-slides.js'), post.sourcePath, outputFile, post.title],

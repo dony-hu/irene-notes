@@ -27,14 +27,6 @@ async function fetchStaticAsset(context, pathname, options = {}) {
   return context.env.ASSETS.fetch(new Request(assetUrl.toString(), init));
 }
 
-function normalizeAssetPath(value = '', fallback = '/') {
-  const raw = String(value || '').trim();
-  if (!raw) return fallback;
-  if (raw.startsWith('./')) return `/${raw.slice(2)}`;
-  if (raw.startsWith('/')) return raw;
-  return fallback;
-}
-
 export async function loadPostCatalog(context) {
   const response = await fetchStaticAsset(context, '/posts/posts.json', {
     headers: { Accept: 'application/json' },
@@ -88,13 +80,8 @@ export async function proxyStaticPost(context, slug) {
   return fetchStaticAsset(context, `/posts/${slug}.md`);
 }
 
-export function resolveSlideAssetPath(post, slug = '') {
-  const fallbackSlug = slug || post?.slug || '';
-  return normalizeAssetPath(post?.url, `/${fallbackSlug}.html`);
-}
-
-export async function proxyStaticSlide(context, post, slug = '') {
-  return fetchStaticAsset(context, resolveSlideAssetPath(post, slug), { includeSearch: true });
+export async function proxyStaticSlide(context, slug) {
+  return fetchStaticAsset(context, `/slides/${slug}.html`, { includeSearch: true });
 }
 
 export function unauthorizedPostResponse() {
@@ -104,9 +91,8 @@ export function unauthorizedPostResponse() {
   });
 }
 
-export function unauthorizedSlideResponse(context, post, title = '内部幻灯片') {
-  const slidePath = resolveSlideAssetPath(post);
-  const loginUrl = `/api/auth/feishu/login?return_to=${encodeURIComponent(slidePath)}`;
+export function unauthorizedSlideResponse(context, slug, title = '内部幻灯片') {
+  const loginUrl = `/api/auth/feishu/login?return_to=${encodeURIComponent(`/slides/${slug}.html`)}`;
   const html = `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -146,12 +132,12 @@ export function unauthorizedSlideResponse(context, post, title = '内部幻灯�
   });
 }
 
-export function redirectToPath(pathname, search = '') {
+export function redirectToSlide(slug, search = '') {
   return new Response(null, {
     status: 302,
     headers: {
       'Cache-Control': 'no-store',
-      Location: `${pathname}${search || ''}`,
+      Location: `/slides/${slug}.html${search || ''}`,
     },
   });
 }

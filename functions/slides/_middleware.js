@@ -34,7 +34,7 @@ export async function onRequest(context) {
     }
 
     if (!(await canAccessPost(context, post))) {
-      return unauthorizedSlideResponse(context, post, post.title);
+      return unauthorizedSlideResponse(context, slug, post.title);
     }
 
     return context.next();

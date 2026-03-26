@@ -23,10 +23,10 @@ export async function onRequestGet(context) {
     }
 
     if (!(await canAccessPost(context, post))) {
-      return unauthorizedSlideResponse(context, post, post.title);
+      return unauthorizedSlideResponse(context, slug, post.title);
     }
 
-    return proxyStaticSlide(context, post, slug);
+    return proxyStaticSlide(context, slug);
   } catch (error) {
     return new Response('Failed to load slide.', { status: 500 });
   }

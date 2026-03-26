@@ -1,189 +1,8 @@
+import siteConfig from './site.config.mjs';
+
 let posts = [];
 let activeTag = null;
 let activeMonth = null;
-
-// 固定标签体系（最多 12 个）
-const FIXED_TAGS = [
-  'AI战略与转型',
-  '组织与管理',
-  '研发效能',
-  '产品与体验',
-  '数据与智能',
-  '平台与架构',
-  '工程实践',
-  '安全与合规',
-  '空间智能',
-  '行业与场景',
-  '项目与交付',
-  '报告与盘点',
-];
-
-const TAG_ALIAS_MAP = {
-  // AI 与战略
-  AI专项: 'AI战略与转型',
-  AI演讲: 'AI战略与转型',
-  组织转型: 'AI战略与转型',
-  决策智能: 'AI战略与转型',
-  技术趋势: 'AI战略与转型',
-  战略分析: 'AI战略与转型',
-  AI工程: 'AI战略与转型',
-  AI治理: 'AI战略与转型',
-  丰图: 'AI战略与转型',
-
-  // 组织与管理
-  组织分析: '组织与管理',
-  研发管理: '组织与管理',
-  项目管理: '组织与管理',
-  组织变革: '组织与管理',
-  技术文化: '组织与管理',
-  组织协作: '组织与管理',
-  经营管理: '组织与管理',
-  项目治理: '组织与管理',
-
-  // 研发效能
-  代码仓盘点: '研发效能',
-  代码分析: '研发效能',
-  质量体系: '研发效能',
-
-  // 产品与体验
-  地图产品: '产品与体验',
-  AI体验: '产品与体验',
-  场景编排: '产品与体验',
-  产品战略: '产品与体验',
-  产品运营: '产品与体验',
-  方法论: '产品与体验',
-
-  // 数据与智能
-  数据工厂: '数据与智能',
-  多模态AI: '数据与智能',
-  模型应用: '数据与智能',
-  数据工程: '数据与智能',
-  聚合数据: '数据与智能',
-  地图数据: '数据与智能',
-  知识图谱: '数据与智能',
-  时空数据: '数据与智能',
-
-  // 平台与架构
-  开放生态: '平台与架构',
-  开放平台: '平台与架构',
-  API目录: '平台与架构',
-  API设计: '平台与架构',
-  系统架构: '平台与架构',
-
-  // 工程实践
-  边缘计算: '工程实践',
-  性能优化: '工程实践',
-  实时计算: '工程实践',
-  自动化: '工程实践',
-
-  // 安全与合规
-  数据安全: '安全与合规',
-  私有化部署: '安全与合规',
-  隐私合规: '安全与合规',
-
-  // 空间智能
-  地图智能体: '空间智能',
-  天枢: '空间智能',
-
-  // 行业与场景
-  行业解决方案: '行业与场景',
-  业务场景: '行业与场景',
-  应用探索: '行业与场景',
-  北京: '行业与场景',
-  北京经开区: '行业与场景',
-  产业服务: '行业与场景',
-  情指: '行业与场景',
-  顺丰: '行业与场景',
-  招商局: '行业与场景',
-  方案: '行业与场景',
-  软硬件一体: '行业与场景',
-
-  // 项目与交付
-  天枢项目: '项目与交付',
-  G1: '项目与交付',
-
-  // 报告与盘点
-  周报汇报: '报告与盘点',
-  数据盘点: '报告与盘点',
-  CSV: '报告与盘点',
-  Markdown: '报告与盘点',
-};
-
-const TAG_RULES = [
-  { keys: ['周报', '汇报', '目录', '盘点', 'report', 'summary', 'catalog'], tag: '报告与盘点' },
-  { keys: ['repo', '代码仓', '效能', 'commit', '提交'], tag: '研发效能' },
-  { keys: ['g1', '天枢', '交付', '项目'], tag: '项目与交付' },
-  { keys: ['安全', '合规', '隐私', '私网'], tag: '安全与合规' },
-  { keys: ['空间智能'], tag: '空间智能' },
-  { keys: ['地图', '体验', '产品'], tag: '产品与体验' },
-  { keys: ['平台', 'api', '架构'], tag: '平台与架构' },
-  { keys: ['数据', '知识图谱', '多模态'], tag: '数据与智能' },
-  { keys: ['组织', '管理', '变革'], tag: '组织与管理' },
-  { keys: ['实时', '边缘', '自动化', '工程'], tag: '工程实践' },
-  { keys: ['场景', '行业', '招商', '经开区'], tag: '行业与场景' },
-  { keys: ['ai', '智能体'], tag: 'AI战略与转型' },
-];
-
-function normalizePostTags(post = {}) {
-  const normalized = [];
-  const sourceTags = Array.isArray(post.tags) ? post.tags : [];
-
-  sourceTags.forEach((tag) => {
-    if (FIXED_TAGS.includes(tag)) {
-      if (!normalized.includes(tag)) normalized.push(tag);
-      return;
-    }
-    const mapped = TAG_ALIAS_MAP[tag];
-    if (mapped && !normalized.includes(mapped)) normalized.push(mapped);
-  });
-
-  const hintText = `${post.title || ''} ${post.slug || ''}`.toLowerCase();
-  TAG_RULES.forEach(({ keys, tag }) => {
-    const matched = keys.some((k) => hintText.includes(String(k).toLowerCase()));
-    if (matched && !normalized.includes(tag)) normalized.push(tag);
-  });
-
-  if (!normalized.length) normalized.push('报告与盘点');
-
-  // 保持固定顺序，并限制每篇最多 3 个标签
-  return FIXED_TAGS.filter((t) => normalized.includes(t)).slice(0, 3);
-}
-
-function toTimestamp(value) {
-  if (!value) return Number.NaN;
-  const input = String(value).trim();
-  if (!input) return Number.NaN;
-  const normalized = /\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}(:\d{2})?$/.test(input)
-    ? input.replace(' ', 'T')
-    : input;
-  const t = Date.parse(normalized);
-  return Number.isNaN(t) ? Number.NaN : t;
-}
-
-function postSortTime(post = {}) {
-  const candidates = [post.datetime, post.dateTime, post.publishedAt, post.published_at, post.date];
-  for (const value of candidates) {
-    const t = toTimestamp(value);
-    if (!Number.isNaN(t)) return t;
-  }
-  return 0;
-}
-
-function comparePosts(a, b) {
-  const ta = postSortTime(a);
-  const tb = postSortTime(b);
-  if (ta !== tb) return tb - ta;
-  return b.slug.localeCompare(a.slug, 'zh-CN');
-}
-
-function normalizePosts(raw = []) {
-  return (Array.isArray(raw) ? raw : [])
-    .map((post) => ({
-      ...post,
-      tags: normalizePostTags(post),
-    }))
-    .sort(comparePosts);
-}
 
 const postListEl = document.getElementById('post-list');
 const tagFilterEl = document.getElementById('tag-filter');
@@ -197,8 +16,10 @@ const viewer = document.getElementById('viewer');
 const contentEl = document.getElementById('post-content');
 const backBtn = document.getElementById('back-btn');
 const exportPdfBtn = document.getElementById('export-pdf-btn');
-const wechatBtn = document.getElementById('wechat-btn');
-const summaryBtn = document.getElementById('summary-btn');
+const sharePostBtn = document.getElementById('share-post-btn');
+const postBackFabBtn = document.getElementById('post-back-fab-btn');
+const postRefreshFabBtn = document.getElementById('post-refresh-fab-btn');
+const wechatBtn = document.getElementById('wechat-btn');const summaryBtn = document.getElementById('summary-btn');
 const themeToggleBtn = document.getElementById('theme-toggle');
 const postsSection = document.getElementById('posts');
 const loginBtn = document.getElementById('login-btn');
@@ -207,11 +28,17 @@ const userSessionEl = document.getElementById('user-session');
 const userAvatarEl = document.getElementById('user-avatar');
 const userNameEl = document.getElementById('user-name');
 const authNoteEl = document.getElementById('auth-note');
+const siteToastEl = document.getElementById('site-toast');
+const themeIconEl = themeToggleBtn?.querySelector('.theme-icon');
 
 let currentPost = null;
 let isMobileFilterOpen = false;
 let showAllMobileTags = false;
 let pendingAuthMessage = '';
+let mermaidLoaderPromise = null;
+const defaultDocumentTitle = document.title;
+
+const MERMAID_SCRIPT_SRC = './assets/vendor/mermaid.min.js?v=202603221255';
 
 function isMobileViewport() {
   return window.matchMedia('(max-width: 900px)').matches;
@@ -257,8 +84,7 @@ function toMonth(dateStr = '') {
 function getAllTags(list) {
   const set = new Set();
   list.forEach((p) => (p.tags || []).forEach((t) => set.add(t)));
-  // 永远按固定标签顺序展示，保证数量与顺序稳定
-  return FIXED_TAGS.filter((tag) => set.has(tag));
+  return Array.from(set);
 }
 
 function getAllMonths(list) {
@@ -278,6 +104,20 @@ function filterPosts() {
   });
 }
 
+function escapeAttr(s = '') {
+  return escapeHtml(s).replaceAll('\n', ' ').trim();
+}
+
+function formatPostDisplayDate(post) {
+  const raw = post.updatedAt || post.updated || post.datetime || post.date || '';
+  if (!raw) return '';
+  if (isMobileViewport()) {
+    const match = String(raw).match(/^(\d{4}-\d{2}-\d{2})/);
+    return match ? match[1] : raw;
+  }
+  return raw;
+}
+
 function renderList() {
   const current = filterPosts();
 
@@ -287,30 +127,28 @@ function renderList() {
   }
 
   postListEl.innerHTML = current
-    .map((p) => {
-      const summary = p.summary ? `<div class="post-summary">${escapeHtml(p.summary)}</div>` : '';
-      const visibility = p.visibility === 'internal' ? '内部' : '外部';
-      const visibilityClass = p.visibility === 'internal' ? 'is-internal' : 'is-public';
-      const tags = (p.tags || []).length ? `<span>${(p.tags || []).join(' / ')}</span>` : '';
-      return `
-    <li>
-      <a class="post-link" href="#${p.slug}" data-slug="${p.slug}">${p.title}</a>
-      ${summary}
-      <div class="post-meta">
-        <span>${p.date || ''}</span>
-        <span class="post-visibility ${visibilityClass}">${visibility}</span>
-        ${tags}
-      </div>
+    .map(
+      (p) => `
+    <li class="post-item">
+      <a class="post-card ${p.visibility === 'internal' ? 'is-internal' : 'is-public'}" href="#${p.slug}" data-slug="${p.slug}">
+        <div class="post-card-title-row">
+          <div class="post-title-inline">
+            <span class="post-link">${p.title}</span>
+            ${p.visibility === 'internal' ? `<span class="post-visibility is-internal post-visibility-inline">内部</span>` : ''}
+          </div>
+          <span class="post-date">${formatPostDisplayDate(p)}</span>
+        </div>
+        ${p.summary ? `<p class="post-summary">${escapeAttr(p.summary)}</p>` : ''}
+      </a>
     </li>
-  `;
-    })
+  `,
+    )
     .join('');
 }
 
 function renderFilters() {
   const tags = getAllTags(posts);
   const months = getAllMonths(posts);
-
   const visibleTags =
     isMobileViewport() && !showAllMobileTags && !activeTag ? tags.slice(0, 6) : tags;
 
@@ -335,19 +173,14 @@ function renderFilters() {
   syncFilterPanelState();
 }
 
-function sanitizeAttr(value = '') {
-  return escapeHtml(String(value || '').trim());
-}
-
 function parseInline(text = '') {
   let out = escapeHtml(text);
 
-  // markdown image: ![alt](src "title")
   out = out.replace(/!\[(.*?)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g, (_m, alt, src, title) => {
     const safeSrc = String(src || '');
     if (!safeSrc || /^javascript:/i.test(safeSrc)) return '';
-    const safeAlt = sanitizeAttr(alt || 'image');
-    const safeTitle = sanitizeAttr(title || '');
+    const safeAlt = escapeHtml(alt || 'image');
+    const safeTitle = escapeHtml(title || '');
     const caption = safeTitle || safeAlt;
     return `<figure class="md-figure"><img class="md-image" loading="lazy" decoding="async" src="${safeSrc}" alt="${safeAlt}" ${safeTitle ? `title="${safeTitle}"` : ''} data-lightbox="1"/><figcaption>${caption}</figcaption></figure>`;
   });
@@ -355,20 +188,32 @@ function parseInline(text = '') {
   out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
   out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   out = out.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  out = out.replace(/\[(.*?)\]\(([^\s)]+)\)/g, (_m, text, href) => {
+  out = out.replace(/\[(.*?)\]\(([^\s)]+)\)/g, (_m, textValue, href) => {
     const safeHref = String(href || '');
-    if (/^javascript:/i.test(safeHref)) return text;
+    if (/^javascript:/i.test(safeHref)) return textValue;
     const isExternal = /^https?:\/\//i.test(safeHref);
     if (isExternal) {
-      return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+      return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${textValue}</a>`;
     }
-    return `<a href="${safeHref}">${text}</a>`;
+    return `<a href="${safeHref}">${textValue}</a>`;
   });
-
-  // 允许少量安全内联换行标签（避免把 <br/> 原样显示成文本）
   out = out.replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
-
   return out;
+}
+
+function renderPdfEmbed(src = '', title = 'PDF 文档') {
+  const safeSrc = String(src || '');
+  const safeTitle = escapeHtml(title || 'PDF 文档');
+  if (!safeSrc || /^javascript:/i.test(safeSrc)) return '';
+  return `
+    <div class="pdf-embed-wrap">
+      <div class="pdf-embed-toolbar">
+        <a class="btn btn-small" href="${safeSrc}" target="_blank" rel="noopener noreferrer">新窗口打开 PDF</a>
+        <a class="btn btn-small" href="${safeSrc}" download>下载 PDF</a>
+      </div>
+      <iframe class="pdf-embed-iframe" src="${safeSrc}#view=FitH" title="${safeTitle}" loading="lazy"></iframe>
+    </div>
+  `;
 }
 
 function stripFrontMatter(mdRaw = '') {
@@ -384,6 +229,7 @@ function mdToHtml(mdRaw = '') {
 
   let inCode = false;
   let codeLang = '';
+  let codeLines = [];
   let inUl = false;
   let inOl = false;
   let para = [];
@@ -393,7 +239,7 @@ function mdToHtml(mdRaw = '') {
     let row = line.trim();
     if (row.startsWith('|')) row = row.slice(1);
     if (row.endsWith('|')) row = row.slice(0, -1);
-    return row.split('|').map((c) => c.trim());
+    return row.split('|').map((cell) => cell.trim());
   };
 
   const flushPara = () => {
@@ -417,46 +263,31 @@ function mdToHtml(mdRaw = '') {
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
 
-    // custom shortcode block: :::image ... :::
-    if (/^\s*:::image\s*$/.test(line)) {
-      flushPara();
-      closeLists();
-      const meta = {};
-      i += 1;
-      while (i < lines.length && !/^\s*:::\s*$/.test(lines[i])) {
-        const m = lines[i].match(/^\s*([a-zA-Z0-9_-]+)\s*=\s*(.+)\s*$/);
-        if (m) meta[m[1].toLowerCase()] = m[2].trim();
-        i += 1;
-      }
-      const src = String(meta.src || '');
-      const alt = escapeHtml(meta.alt || 'image');
-      const caption = escapeHtml(meta.caption || meta.alt || '');
-      const width = /^\d{2,4}$/.test(String(meta.width || '')) ? Number(meta.width) : null;
-      if (src && !/^javascript:/i.test(src)) {
-        const style = width ? ` style="max-width:${width}px"` : '';
-        html.push(`<figure class="md-figure"${style}><img class="md-image" loading="lazy" decoding="async" src="${src}" alt="${alt}" data-lightbox="1"/>${caption ? `<figcaption>${caption}</figcaption>` : ''}</figure>`);
-      }
-      continue;
-    }
-
     if (line.trim().startsWith('```')) {
       flushPara();
       closeLists();
       if (!inCode) {
         inCode = true;
-        codeLang = line.trim().slice(3).trim();
-        html.push(`<pre><code class="lang-${escapeHtml(codeLang)}">`);
+        codeLang = line.trim().slice(3).trim().toLowerCase();
+        codeLines = [];
       } else {
+        const codeValue = codeLines.join('\n');
+        if (codeLang === 'mermaid') {
+          html.push(
+            `<div class="mermaid-block"><div class="mermaid-diagram" data-mermaid-source="${escapeHtml(encodeURIComponent(codeValue))}"></div></div>`,
+          );
+        } else {
+          html.push(`<pre><code class="lang-${escapeHtml(codeLang)}">${escapeHtml(codeValue)}</code></pre>`);
+        }
         inCode = false;
         codeLang = '';
-        html.push('</code></pre>');
+        codeLines = [];
       }
       continue;
     }
 
     if (inCode) {
-      html.push(escapeHtml(line));
-      html.push('\n');
+      codeLines.push(line);
       continue;
     }
 
@@ -466,17 +297,32 @@ function mdToHtml(mdRaw = '') {
       continue;
     }
 
+    if (/^\s*---+\s*$/.test(line)) {
+      flushPara();
+      closeLists();
+      html.push('<hr/>');
+      continue;
+    }
+
     const imageOnly = line.match(/^!\[(.*?)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)\s*$/);
     if (imageOnly) {
       flushPara();
       closeLists();
       const alt = escapeHtml(imageOnly[1] || 'image');
       const src = String(imageOnly[2] || '');
-      const ttl = escapeHtml(imageOnly[3] || '');
+      const title = escapeHtml(imageOnly[3] || '');
       if (src && !/^javascript:/i.test(src)) {
-        const caption = ttl || alt;
-        html.push(`<figure class="md-figure"><img class="md-image" loading="lazy" decoding="async" src="${src}" alt="${alt}" ${ttl ? `title="${ttl}"` : ''} data-lightbox="1"/><figcaption>${caption}</figcaption></figure>`);
+        const caption = title || alt;
+        html.push(`<figure class="md-figure"><img class="md-image" loading="lazy" decoding="async" src="${src}" alt="${alt}" ${title ? `title="${title}"` : ''} data-lightbox="1"/><figcaption>${caption}</figcaption></figure>`);
       }
+      continue;
+    }
+
+    const pdfEmbed = line.match(/^\[pdf\]\(([^\s)]+)(?:\s+"([^"]*)")?\)\s*$/i);
+    if (pdfEmbed) {
+      flushPara();
+      closeLists();
+      html.push(renderPdfEmbed(pdfEmbed[1], pdfEmbed[2] || 'PDF 文档'));
       continue;
     }
 
@@ -489,17 +335,16 @@ function mdToHtml(mdRaw = '') {
       continue;
     }
 
-    // markdown table support
     if (line.includes('|') && i + 1 < lines.length && isTableSep(lines[i + 1])) {
       flushPara();
       closeLists();
 
       const headers = splitTableRow(line);
-      html.push('<div class="table-wrap"><table class="md-table"><thead><tr>');
-      headers.forEach((h) => html.push(`<th>${parseInline(h)}</th>`));
+      html.push('<div class="table-wrap"><div class="table-scroll-hint">← 左右滑动查看完整表格</div><table class="md-table"><thead><tr>');
+      headers.forEach((header) => html.push(`<th>${parseInline(header)}</th>`));
       html.push('</tr></thead><tbody>');
 
-      i += 2; // skip header + separator
+      i += 2;
       while (i < lines.length) {
         const rowLine = lines[i];
         if (!rowLine || !rowLine.includes('|') || /^\s*$/.test(rowLine)) {
@@ -508,21 +353,11 @@ function mdToHtml(mdRaw = '') {
         }
         const cols = splitTableRow(rowLine);
         html.push('<tr>');
-        cols.forEach((c) => html.push(`<td>${parseInline(c)}</td>`));
+        cols.forEach((cell) => html.push(`<td>${parseInline(cell)}</td>`));
         html.push('</tr>');
         i += 1;
       }
       html.push('</tbody></table></div>');
-      continue;
-    }
-
-    // allow limited raw HTML blocks (for embedded pdf/slides)
-    const raw = line.trim();
-    const allowRawHtml = /^(<div\b[^>]*>|<\/div>|<figure\b[^>]*>|<\/figure>|<figcaption\b[^>]*>|<\/figcaption>|<img\b[^>]*\/?>)$/i;
-    if (allowRawHtml.test(raw)) {
-      flushPara();
-      closeLists();
-      html.push(raw);
       continue;
     }
 
@@ -534,8 +369,7 @@ function mdToHtml(mdRaw = '') {
       continue;
     }
 
-    // 支持缩进列表（例如两级列表："  - item"）
-    const ul = line.match(/^\s*[-*+]\s+(.*)$/);
+    const ul = line.match(/^[-*+]\s+(.*)$/);
     if (ul) {
       flushPara();
       if (!inUl) {
@@ -565,13 +399,181 @@ function mdToHtml(mdRaw = '') {
   flushPara();
   closeLists();
 
-  if (inCode) html.push('</code></pre>');
+  if (inCode) {
+    const codeValue = codeLines.join('\n');
+    if (codeLang === 'mermaid') {
+      html.push(
+        `<div class="mermaid-block"><div class="mermaid-diagram" data-mermaid-source="${escapeHtml(encodeURIComponent(codeValue))}"></div></div>`,
+      );
+    } else {
+      html.push(`<pre><code class="lang-${escapeHtml(codeLang)}">${escapeHtml(codeValue)}</code></pre>`);
+    }
+  }
 
   return html.join('\n');
 }
 
+function getMermaidTheme() {
+  return document.body.getAttribute('data-theme') === THEME_LIGHT ? 'neutral' : 'dark';
+}
+
+function getMermaidThemeVariables() {
+  if (document.body.getAttribute('data-theme') === THEME_LIGHT) {
+    return {
+      background: '#F8FAFE',
+      primaryColor: '#EEF4FF',
+      primaryBorderColor: '#7EA7E8',
+      primaryTextColor: '#16243E',
+      secondaryColor: '#EAFBF7',
+      secondaryBorderColor: '#65C8B7',
+      secondaryTextColor: '#123C44',
+      tertiaryColor: '#FFF4E6',
+      tertiaryBorderColor: '#E4B46A',
+      tertiaryTextColor: '#5F3710',
+      lineColor: '#7A8FB5',
+      textColor: '#1F3150',
+      fontSize: '18px',
+      fontFamily: '"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif',
+      nodeBorder: '#AFC3E8',
+      clusterBkg: '#F8FAFE',
+      clusterBorder: '#D5E1F7',
+      edgeLabelBackground: '#FFFFFF',
+    };
+  }
+
+  return {
+    background: '#111B2D',
+    primaryColor: '#192842',
+    primaryBorderColor: '#6E8FC3',
+    primaryTextColor: '#EAF0FF',
+    secondaryColor: '#132D33',
+    secondaryBorderColor: '#52B7A6',
+    secondaryTextColor: '#E7FFFB',
+    tertiaryColor: '#2E2418',
+    tertiaryBorderColor: '#CF9A52',
+    tertiaryTextColor: '#FFF2DE',
+    lineColor: '#7089B8',
+    textColor: '#E7EEFF',
+    fontSize: '18px',
+    fontFamily: '"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif',
+    nodeBorder: '#4A6088',
+    clusterBkg: '#111B2D',
+    clusterBorder: '#2A3B5C',
+    edgeLabelBackground: '#182339',
+  };
+}
+
+function renderMermaidFallback(target, source) {
+  target.classList.add('is-error');
+  target.innerHTML = `<pre><code class="lang-mermaid">${escapeHtml(source)}</code></pre>`;
+}
+
+function loadMermaidLibrary() {
+  if (window.mermaid) {
+    return Promise.resolve(window.mermaid);
+  }
+
+  if (mermaidLoaderPromise) {
+    return mermaidLoaderPromise;
+  }
+
+  mermaidLoaderPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = MERMAID_SCRIPT_SRC;
+    script.async = true;
+    script.onload = () => {
+      if (window.mermaid) {
+        resolve(window.mermaid);
+        return;
+      }
+      reject(new Error('Mermaid loaded without global object.'));
+    };
+    script.onerror = () => reject(new Error('Failed to load Mermaid bundle.'));
+    document.head.appendChild(script);
+  });
+
+  return mermaidLoaderPromise;
+}
+
+async function renderMermaidDiagrams(container = contentEl) {
+  if (!container?.querySelectorAll) return;
+
+  const diagrams = Array.from(container.querySelectorAll('.mermaid-diagram[data-mermaid-source]'));
+  if (!diagrams.length) return;
+
+  let mermaid;
+  try {
+    mermaid = await loadMermaidLibrary();
+  } catch (error) {
+    console.warn('failed to load mermaid', error);
+    diagrams.forEach((diagramEl) => {
+      const source = decodeURIComponent(diagramEl.dataset.mermaidSource || '');
+      renderMermaidFallback(diagramEl, source);
+    });
+    return;
+  }
+
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: getMermaidTheme(),
+    themeVariables: getMermaidThemeVariables(),
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      nodeSpacing: 64,
+      rankSpacing: 82,
+      padding: 24,
+      useMaxWidth: true,
+    },
+  });
+
+  for (let index = 0; index < diagrams.length; index += 1) {
+    const diagramEl = diagrams[index];
+    const source = decodeURIComponent(diagramEl.dataset.mermaidSource || '');
+
+    if (!source) continue;
+
+    try {
+      const renderId = `mermaid-${Date.now()}-${index}`;
+      const result = await mermaid.render(renderId, source);
+      diagramEl.classList.remove('is-error');
+      diagramEl.innerHTML = result.svg;
+      if (typeof result.bindFunctions === 'function') {
+        result.bindFunctions(diagramEl);
+      }
+    } catch (error) {
+      console.warn('failed to render mermaid diagram', error);
+      renderMermaidFallback(diagramEl, source);
+    }
+  }
+}
+
+function ensureLightbox() {
+  if (document.getElementById('lightbox-overlay')) return;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'lightbox-overlay';
+  overlay.className = 'lightbox-overlay hidden';
+  overlay.innerHTML = `
+    <button class="lightbox-close" aria-label="关闭预览">×</button>
+    <img class="lightbox-image" alt="preview" />
+  `;
+  document.body.appendChild(overlay);
+
+  const close = () => overlay.classList.add('hidden');
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay || e.target.classList.contains('lightbox-close')) {
+      close();
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+}
+
 function renderEmbeddedSlideDeck(slug, target) {
-  const src = (target.url || `./${slug}.html`) + '?embed=1';
+  const src = (target.url || `./slides/${slug}.html`) + '?embed=1';
   contentEl.innerHTML = `
     <div class="slide-embed-wrap">
       <iframe class="slide-embed-iframe" src="${src}" title="${target.title || slug}" loading="lazy" scrolling="no"></iframe>
@@ -592,65 +594,37 @@ function renderProtectedPostMessage() {
   `;
 }
 
-function estimateCellWeight(text = '') {
-  let weight = 0;
-  for (const ch of String(text)) {
-    weight += /[\u4e00-\u9fa5]/.test(ch) ? 2 : 1;
+async function openPost(slug, options = {}) {
+  const target = posts.find((p) => p.slug === slug);
+  if (!target) return;
+  currentPost = target;
+  document.title = target.title || defaultDocumentTitle;
+
+  if (!options.skipHistory) {
+    const nextHash = `#${slug}`;
+    if (location.hash !== nextHash) {
+      history.pushState({ slug }, '', nextHash);
+    }
   }
-  return Math.max(1, weight);
-}
 
-function optimizeTables(root = contentEl) {
-  if (!root) return;
-  const tables = root.querySelectorAll('.md-table');
-  tables.forEach((table) => {
-    const rows = Array.from(table.querySelectorAll('tr'));
-    if (!rows.length) return;
+  if (target.type === 'webslides') {
+    renderEmbeddedSlideDeck(slug, target);
+  } else {
+    const response = await fetch(`./posts/${slug}.md`);
+    if (response.status === 401) {
+      renderProtectedPostMessage();
+      viewer.classList.remove('hidden');
+      postsSection.classList.add('hidden');
+      return;
+    }
 
-    const colCount = rows.reduce((m, r) => Math.max(m, r.children.length), 0);
-    if (!colCount) return;
+    const text = await response.text();
+    contentEl.innerHTML = mdToHtml(text);
+    await renderMermaidDiagrams(contentEl);
+  }
 
-    const weights = Array(colCount).fill(8);
-    rows.forEach((row, rIdx) => {
-      Array.from(row.children).forEach((cell, cIdx) => {
-        const w = estimateCellWeight(cell.textContent || '');
-        const factor = rIdx === 0 ? 1.2 : 1;
-        weights[cIdx] = Math.max(weights[cIdx], Math.min(72, w * factor));
-      });
-    });
-
-    const sum = weights.reduce((a, b) => a + b, 0);
-    const minPct = colCount <= 4 ? 14 : 10;
-    const maxPct = colCount <= 4 ? 45 : 34;
-    let widths = weights.map((w) => (w / sum) * 100);
-    widths = widths.map((p) => Math.max(minPct, Math.min(maxPct, p)));
-    const sumAfter = widths.reduce((a, b) => a + b, 0) || 100;
-    widths = widths.map((p) => (p / sumAfter) * 100);
-
-    const old = table.querySelector('colgroup');
-    if (old) old.remove();
-    const cg = document.createElement('colgroup');
-    widths.forEach((pct) => {
-      const col = document.createElement('col');
-      col.style.width = `${pct.toFixed(2)}%`;
-      cg.appendChild(col);
-    });
-    table.prepend(cg);
-
-    const isMobile = window.matchMedia('(max-width: 900px)').matches;
-    const minWidth = isMobile ? Math.max(420, colCount * 150) : Math.max(620, colCount * 210);
-
-    table.style.setProperty('--col-count', String(colCount));
-    table.style.setProperty('--min-table-width', `${minWidth}px`);
-    table.classList.toggle('table-compact', colCount >= 5 || isMobile);
-  });
-}
-
-function closePost() {
-  viewer.classList.add('hidden');
-  postsSection.classList.remove('hidden');
-  document.body.classList.remove('viewing-post');
-  currentPost = null;
+  viewer.classList.remove('hidden');
+  postsSection.classList.add('hidden');
 }
 
 function getCurrentReturnTo() {
@@ -663,35 +637,30 @@ function buildAuthUrl(action) {
 
 function setAuthNote(message = '') {
   if (!authNoteEl) return;
+
   authNoteEl.textContent = message;
   authNoteEl.classList.toggle('hidden', !message);
 }
 
-function mapAuthError(code, detail = '') {
+function mapAuthError(code) {
   const messages = {
     access_denied: '你取消了飞书授权，本次未登录。',
     invalid_state: '登录状态校验失败，请重新发起飞书登录。',
     login_failed: '飞书登录失败，请检查应用配置后重试。',
-    login_token_exchange_failed: '飞书登录失败：授权码换取访问令牌失败。请重点检查当前 App ID 对应的 App Secret 是否正确。',
-    login_user_info_failed: '飞书登录失败：已拿到访问令牌，但读取飞书用户信息失败。请检查应用权限或重新确认应用配置。',
     tenant_not_allowed: '当前飞书企业不在允许名单内。',
   };
 
-  const base = messages[code] || '飞书登录未完成，请稍后再试。';
-  const safeDetail = String(detail || '').trim();
-  return safeDetail ? `${base} 原始错误：${safeDetail}` : base;
+  return messages[code] || '飞书登录未完成，请稍后再试。';
 }
 
 function consumeAuthError() {
   const url = new URL(location.href);
   const authError = url.searchParams.get('auth_error');
-  const authErrorDetail = url.searchParams.get('auth_error_detail');
 
   if (!authError) return;
 
-  pendingAuthMessage = mapAuthError(authError, authErrorDetail);
+  pendingAuthMessage = mapAuthError(authError);
   url.searchParams.delete('auth_error');
-  url.searchParams.delete('auth_error_detail');
   history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
 }
 
@@ -705,27 +674,25 @@ function renderAuthState(authState = {}) {
   userSessionEl.classList.toggle('hidden', !enabled || !authenticated);
 
   if (!enabled) {
-    setAuthNote('飞书登录暂未启用，当前仅显示公开文章。');
+    setAuthNote('飞书登录尚未配置。请先在 Cloudflare Pages 中补齐飞书环境变量。');
     return;
   }
 
   if (!authenticated) {
-    setAuthNote(pendingAuthMessage || '当前仅显示公开文章，登录后可查看内部内容。');
+    setAuthNote(pendingAuthMessage || '登录后可查看内部文章与工作手册。');
     pendingAuthMessage = '';
     return;
   }
 
   const user = authState.user || {};
-  if (userNameEl) userNameEl.textContent = user.name || '飞书用户';
+  userNameEl.textContent = user.name || '飞书用户';
 
-  if (userAvatarEl) {
-    if (user.avatarUrl) {
-      userAvatarEl.src = user.avatarUrl;
-      userAvatarEl.classList.remove('hidden');
-    } else {
-      userAvatarEl.removeAttribute('src');
-      userAvatarEl.classList.add('hidden');
-    }
+  if (user.avatarUrl) {
+    userAvatarEl.src = user.avatarUrl;
+    userAvatarEl.classList.remove('hidden');
+  } else {
+    userAvatarEl.removeAttribute('src');
+    userAvatarEl.classList.add('hidden');
   }
 
   setAuthNote('');
@@ -741,71 +708,15 @@ async function loadAuthState() {
 
   try {
     const response = await fetch('/api/auth/feishu/me', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`auth_state_http_${response.status}`);
+    }
     const authState = await response.json();
     renderAuthState(authState);
   } catch (e) {
     console.warn('failed to load auth state', e);
+    renderAuthState({ enabled: true, authenticated: false });
     setAuthNote('飞书登录状态读取失败，请稍后刷新重试。');
-  }
-}
-
-async function openPost(slug, { updateHistory = true } = {}) {
-  const target = posts.find((p) => p.slug === slug);
-  if (!target) return;
-  currentPost = target;
-
-  if (target.type === 'webslides') {
-    const slideUrl = target.url || `./${slug}.html`;
-    try {
-      const probe = await fetch(slideUrl, { method: 'HEAD' });
-      const ct = (probe.headers.get('content-type') || '').toLowerCase();
-      if (probe.ok && ct.includes('text/html')) {
-        renderEmbeddedSlideDeck(slug, target);
-      } else {
-        const response = await fetch(`./posts/${slug}.md`);
-        if (response.status === 401) {
-          renderProtectedPostMessage();
-          viewer.classList.remove('hidden');
-          postsSection.classList.add('hidden');
-          document.body.classList.add('viewing-post');
-          return;
-        }
-        const text = await response.text();
-        contentEl.innerHTML = mdToHtml(text);
-      }
-    } catch {
-      const response = await fetch(`./posts/${slug}.md`);
-      if (response.status === 401) {
-        renderProtectedPostMessage();
-        viewer.classList.remove('hidden');
-        postsSection.classList.add('hidden');
-        document.body.classList.add('viewing-post');
-        return;
-      }
-      const text = await response.text();
-      contentEl.innerHTML = mdToHtml(text);
-    }
-  } else {
-    const response = await fetch(`./posts/${slug}.md`);
-    if (response.status === 401) {
-      renderProtectedPostMessage();
-      viewer.classList.remove('hidden');
-      postsSection.classList.add('hidden');
-      document.body.classList.add('viewing-post');
-      return;
-    }
-    const text = await response.text();
-    contentEl.innerHTML = mdToHtml(text);
-  }
-
-  optimizeTables(contentEl);
-
-  viewer.classList.remove('hidden');
-  postsSection.classList.add('hidden');
-  document.body.classList.add('viewing-post');
-
-  if (updateHistory) {
-    history.pushState({ type: 'post', slug }, '', `#${slug}`);
   }
 }
 
@@ -872,29 +783,115 @@ window.addEventListener('resize', () => {
   renderFilters();
 });
 
-backBtn.addEventListener('click', () => {
-  // Stable return-to-list behavior, even after a hard refresh on a #slug URL.
-  history.pushState({ type: 'list' }, '', `${location.pathname}${location.search}`);
-  closePost();
+window.addEventListener('popstate', async () => {
+  if (location.hash) {
+    await openPost(location.hash.replace('#', ''), { skipHistory: true });
+    return;
+  }
+  showListView({ skipHistory: true });
 });
 
-window.addEventListener('popstate', () => {
-  const slug = location.hash.replace('#', '');
-  if (slug) {
-    openPost(slug, { updateHistory: false });
-  } else {
-    closePost();
+function showListView(options = {}) {
+  viewer.classList.add('hidden');
+  postsSection.classList.remove('hidden');
+  currentPost = null;
+  document.title = defaultDocumentTitle;
+  if (!options.skipHistory && location.hash) {
+    history.pushState({}, '', `${location.pathname}${location.search}`);
   }
+}
+
+backBtn.addEventListener('click', () => {
+  showListView();
 });
+
+if (postBackFabBtn) {
+  postBackFabBtn.addEventListener('click', () => {
+    showListView();
+  });
+}
+
+if (postRefreshFabBtn) {
+  postRefreshFabBtn.addEventListener('click', async () => {
+    if (!currentPost) {
+      location.reload();
+      return;
+    }
+    await openPost(currentPost.slug, { skipHistory: true });
+    showToast('已刷新');
+  });
+}
+
+if (viewer) {
+  viewer.addEventListener('click', (e) => {
+    const img = e.target.closest('img[data-lightbox="1"]');
+    if (!img) return;
+    ensureLightbox();
+    const overlay = document.getElementById('lightbox-overlay');
+    const big = overlay?.querySelector('.lightbox-image');
+    if (!overlay || !big) return;
+    big.src = img.getAttribute('src') || '';
+    big.alt = img.getAttribute('alt') || 'preview';
+    overlay.classList.remove('hidden');
+  });
+}
+
+let toastTimer = null;
+
+function showToast(message = '') {
+  if (!siteToastEl || !message) return;
+  siteToastEl.textContent = message;
+  siteToastEl.classList.remove('hidden');
+  if (toastTimer) window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    siteToastEl.classList.add('hidden');
+  }, 1800);
+}
+
+if (sharePostBtn) {
+  sharePostBtn.addEventListener('click', async () => {
+    if (!currentPost) return;
+
+    const shareData = {
+      title: currentPost.title || defaultDocumentTitle,
+      text: currentPost.summary || currentPost.title || defaultDocumentTitle,
+      url: location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+
+      await navigator.clipboard?.writeText(shareData.url);
+      showToast('链接已复制');
+    } catch (e) {
+      if (!shareData.url) return;
+      try {
+        await navigator.clipboard?.writeText(shareData.url);
+        showToast('链接已复制');
+      } catch (_err) {
+        showToast('当前浏览器暂不支持分享');
+      }
+    }
+  });
+}
 
 if (exportPdfBtn) {
   exportPdfBtn.addEventListener('click', () => {
     if (!currentPost) return;
-    const slug = currentPost.slug;
-    const type = currentPost.type === 'webslides' ? 'slides' : 'note';
-    const src = `./posts/${slug}.md`;
-    const cmd = `node scripts/export-pdf.js --source "${src}" --mode ${type} --title "${currentPost.title || slug}" --out "export/${slug}.pdf"`;
-    alert(`请在项目根目录执行:\n\n${cmd}`);
+    const printTitle = currentPost.title || defaultDocumentTitle;
+    const previousTitle = document.title;
+    document.title = printTitle;
+
+    const restoreTitle = () => {
+      document.title = previousTitle;
+      window.removeEventListener('afterprint', restoreTitle);
+    };
+
+    window.addEventListener('afterprint', restoreTitle, { once: true });
+    window.print();
   });
 }
 
@@ -949,7 +946,7 @@ if (logoutBtn) {
   });
 }
 
-const THEME_KEY = 'irene-notes-theme';
+const THEME_KEY = siteConfig.themeStorageKey || 'jerry-notes-theme';
 const THEME_LIGHT = 'light';
 const THEME_DARK = 'dark';
 
@@ -959,13 +956,16 @@ function applyTheme(mode) {
   if (themeToggleBtn) {
     themeToggleBtn.setAttribute('aria-label', real === THEME_LIGHT ? '切换到黑夜主题' : '切换到白天主题');
     themeToggleBtn.setAttribute('title', real === THEME_LIGHT ? '切换到黑夜主题' : '切换到白天主题');
-    const icon = themeToggleBtn.querySelector('.theme-icon');
-    if (icon) icon.textContent = real === THEME_LIGHT ? '🌙' : '☀️';
   }
+  if (themeIconEl) {
+    themeIconEl.textContent = real === THEME_LIGHT ? '🌙' : '☀️';
+  }
+  void renderMermaidDiagrams(contentEl);
 }
 
 function initTheme() {
-  const mode = localStorage.getItem(THEME_KEY) || THEME_DARK;
+  const preset = document.documentElement.getAttribute('data-theme');
+  const mode = localStorage.getItem(THEME_KEY) || preset || THEME_LIGHT;
   applyTheme(mode);
 
   if (themeToggleBtn) {
@@ -979,66 +979,22 @@ function initTheme() {
 }
 
 async function bootstrap() {
-  initTheme();
-  isMobileFilterOpen = false;
-  syncFilterPanelState();
-
   try {
     const data = await fetch('./posts/posts.json').then((r) => r.json());
-    posts = normalizePosts(data);
+    posts = data;
   } catch (e) {
     console.warn('failed to load posts.json, fallback to empty list', e);
     posts = [];
   }
 
+  initTheme();
   await loadAuthState();
   renderFilters();
   renderList();
 
   if (location.hash) {
-    openPost(location.hash.replace('#', ''), { updateHistory: false });
-  } else {
-    history.replaceState({ type: 'list' }, '', location.pathname + location.search);
+    await openPost(location.hash.replace('#', ''), { skipHistory: true });
   }
-}
-
-function ensureLightbox() {
-  if (document.getElementById('lightbox-overlay')) return;
-  const overlay = document.createElement('div');
-  overlay.id = 'lightbox-overlay';
-  overlay.className = 'lightbox-overlay hidden';
-  overlay.innerHTML = `
-    <button class="lightbox-close" aria-label="关闭预览">×</button>
-    <img class="lightbox-image" alt="preview" />
-  `;
-  document.body.appendChild(overlay);
-
-  const close = () => overlay.classList.add('hidden');
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay || e.target.classList.contains('lightbox-close')) close();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') close();
-  });
-}
-
-if (viewer) {
-  viewer.addEventListener('click', (e) => {
-    const img = e.target.closest('.markdown-body img');
-    if (!img) return;
-    // ignore tiny ui icons if any
-    const w = Number(img.naturalWidth || img.clientWidth || 0);
-    const h = Number(img.naturalHeight || img.clientHeight || 0);
-    if (w < 80 || h < 80) return;
-
-    ensureLightbox();
-    const overlay = document.getElementById('lightbox-overlay');
-    const big = overlay?.querySelector('.lightbox-image');
-    if (!overlay || !big) return;
-    big.src = img.getAttribute('src') || '';
-    big.alt = img.getAttribute('alt') || 'preview';
-    overlay.classList.remove('hidden');
-  });
 }
 
 bootstrap();
