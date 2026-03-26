@@ -1,4 +1,4 @@
-import siteConfig from './site.config.mjs';
+import siteConfig from './site.config.mjs?v=202603270755';
 
 function setText(id, value) {
   const element = document.getElementById(id);
