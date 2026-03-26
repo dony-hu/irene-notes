@@ -1,15 +1,14 @@
 [
   {
-    "title": "行业Deep-dive · 小图CLAW——抓住空间智能体的3-6个月窗口期",
-    "slug": "week-deepdive-xiaotu-claw",
+    "title": "你好，小站",
+    "slug": "hello-site",
     "date": "2026-03-26",
     "tags": [
-      "行业研究",
-      "产品",
-      "小图CLAW"
+      "测试",
+      "建站"
     ],
-    "visibility": "internal",
-    "summary": "OpenAI Operator、智谱AutoGLM相继发布，AI已经从\"对话\"走向\"自主操作\"，空间智能作为AI理解物理世界的核心入口，成为巨头必争之地。"
+    "visibility": "public",
+    "summary": "这是一篇测试文章，用来验证新文章发布流程是否正常工作。"
   },
   {
     "title": "你好，小站",
@@ -20,18 +19,7 @@
       "技能验证"
     ],
     "visibility": "public",
-    "summary": "这是一篇由 AI 自动生成的测试文章，用来验证 site publish post 技能是否工作正常。"
-  },
-  {
-    "title": "你好，小站",
-    "slug": "hello-site",
-    "date": "2026-03-26",
-    "tags": [
-      "测试",
-      "建站"
-    ],
-    "visibility": "public",
-    "summary": "这是一篇测试文章，用来验证新文章发布流程是否正常工作。"
+    "summary": "这是一篇由 AI 自动生成的测试文章，用来验证 site-publish-post 技能是否工作正常。"
   },
   {
     "title": "行业Deep-dive · 小图CLAW——抓住空间智能体的3-6个月窗口期",
@@ -601,18 +589,6 @@
   {
     "title": "马帅的AI转型思考",
     "slug": "20260320-233724-565793-f344930b-马帅+转型思考",
-    "date": "2026-03-20",
-    "tags": [
-      "AI转型",
-      "读后感",
-      "团队分享"
-    ],
-    "visibility": "internal",
-    "summary": "传统模式下，标准地址数据的生产过程极为笨重：我们需要组合使用丰眼工具、FME、QGIS、ArcGIS、Python脚本、数据库等一系列工具，每一步都是手工作业，用QGIS做空间分析，用ArcG…"
-  },
-  {
-    "title": "马帅的AI转型思考",
-    "slug": "20260320-233724-565793-f344930b-马帅+转型思考.md",
     "date": "2026-03-20",
     "tags": [
       "AI转型",
