@@ -1,5 +1,17 @@
 [
   {
+    "title": "自动发版验证：Irene Notes 部署烟雾测试",
+    "slug": "deploy-smoke-test-2026-03-27",
+    "date": "2026-03-27",
+    "tags": [
+      "测试",
+      "部署",
+      "自动发版"
+    ],
+    "visibility": "public",
+    "summary": "用一篇最小公开文章验证 Irene Notes 的 GitHub Actions 到 Cloudflare Pages 自动发版链路是否恢复正常。"
+  },
+  {
     "title": "你好，小站",
     "slug": "hello-site",
     "date": "2026-03-26",
