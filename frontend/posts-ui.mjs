@@ -49,7 +49,7 @@ export function renderList({ posts, activeTag, activeMonth, postListEl, isMobile
     .map(
       (post) => `
     <li class="post-item">
-      <a class="post-card ${post.visibility === 'internal' ? 'is-internal' : 'is-public'}" href="#${post.slug}" data-slug="${post.slug}">
+      <a class="post-card ${post.visibility === 'internal' ? 'is-internal' : 'is-public'}" href="#${encodeURIComponent(post.slug)}" data-slug="${post.slug}">
         <div class="post-card-title-row">
           <div class="post-title-inline">
             <span class="post-link">${post.title}</span>

@@ -43,11 +43,18 @@ export function normalizePostSlug(raw = '', extension = '') {
   const value = String(raw).trim();
   if (!value) return '';
 
-  if (extension && value.toLowerCase().endsWith(extension.toLowerCase())) {
-    return value.slice(0, -extension.length);
+  let decoded = value;
+  try {
+    decoded = decodeURIComponent(value);
+  } catch {
+    decoded = value;
   }
 
-  return value;
+  if (extension && decoded.toLowerCase().endsWith(extension.toLowerCase())) {
+    return decoded.slice(0, -extension.length);
+  }
+
+  return decoded;
 }
 
 export function findPostBySlug(posts, slug) {

@@ -11,8 +11,8 @@ const siteConfig = {
   assets: {
     faviconHref: './assets/mouse-favicon.svg',
     faviconType: 'image/svg+xml',
-    bannerHref: './assets/irene-banner.png?v=202603261710',
-    bannerAlt: 'Irene Notes 抬头图片',
+    bannerHref: './assets/irene-spring-girl-banner.jpg?v=202603270745',
+    bannerAlt: '樱花氛围下的二次元女孩横幅',
   },
   deploy: {
     pagesProjectName: 'irene-notes',

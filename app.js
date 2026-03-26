@@ -276,6 +276,21 @@ function renderProtectedPostMessage() {
   `;
 }
 
+function decodeHashSlug(raw = '') {
+  const value = String(raw || '').replace(/^#/, '').trim();
+  if (!value) return '';
+
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+function buildPostHash(slug = '') {
+  return `#${encodeURIComponent(String(slug || ''))}`;
+}
+
 async function openPost(slug, options = {}) {
   const target = posts.find((p) => p.slug === slug);
   if (!target) return;
@@ -283,7 +298,7 @@ async function openPost(slug, options = {}) {
   document.title = target.title || defaultDocumentTitle;
 
   if (!options.skipHistory) {
-    const nextHash = `#${slug}`;
+    const nextHash = buildPostHash(slug);
     if (location.hash !== nextHash) {
       history.pushState({ slug }, '', nextHash);
     }
@@ -467,7 +482,7 @@ window.addEventListener('resize', () => {
 
 window.addEventListener('popstate', async () => {
   if (location.hash) {
-    await openPost(location.hash.replace('#', ''), { skipHistory: true });
+    await openPost(decodeHashSlug(location.hash), { skipHistory: true });
     return;
   }
   showListView({ skipHistory: true });
@@ -675,7 +690,7 @@ async function bootstrap() {
   renderPostList();
 
   if (location.hash) {
-    await openPost(location.hash.replace('#', ''), { skipHistory: true });
+    await openPost(decodeHashSlug(location.hash), { skipHistory: true });
   }
 }
 
