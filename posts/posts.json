@@ -1,37 +1,14 @@
 [
   {
-    "title": "自动发版验证：Irene Notes 部署烟雾测试",
-    "slug": "deploy-smoke-test-2026-03-27",
+    "title": "爆款产品从零到一上市管理流程",
+    "slug": "best-selling-product-zero-to-one-launch-process",
     "date": "2026-03-27",
     "tags": [
-      "测试",
-      "部署",
-      "自动发版"
+      "产品管理",
+      "流程规范"
     ],
-    "visibility": "public",
-    "summary": "用一篇最小公开文章验证 Irene Notes 的 GitHub Actions 到 Cloudflare Pages 自动发版链路是否恢复正常。"
-  },
-  {
-    "title": "你好，小站",
-    "slug": "hello-site",
-    "date": "2026-03-26",
-    "tags": [
-      "测试",
-      "建站"
-    ],
-    "visibility": "public",
-    "summary": "这是一篇测试文章，用来验证新文章发布流程是否正常工作。"
-  },
-  {
-    "title": "你好，小站",
-    "slug": "hello-site-test",
-    "date": "2026-03-26",
-    "tags": [
-      "测试",
-      "技能验证"
-    ],
-    "visibility": "public",
-    "summary": "这是一篇由 AI 自动生成的测试文章，用来验证 site-publish-post 技能是否工作正常。"
+    "visibility": "internal",
+    "summary": "在启动立项前，必须完成： 价值定位与差异化分析（完成后才能进入下一阶段） 一句话价值定位（≤30字）：帮助什么客户，解决什么痛点，获得什么收益 痛点-方案-价值对应表（必须量化） 竞争对手差异…"
   },
   {
     "title": "爆款产品立项会前准备输出清单",
